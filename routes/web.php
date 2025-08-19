@@ -29,4 +29,8 @@ Route::get('/dashboardv', function () {
 // Welcome / catalogue
 Route::get('/welcome', function () {
     return view('welcome');
-})->name('welcome');
+})->name('welcome'); 
+
+Route::get('/visite', function () {
+    return view('visite');
+})->name('visite');

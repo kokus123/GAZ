@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\ResetPasswordMail; // ajout
+
 
 class AuthControllee extends Controller
 {
@@ -56,8 +56,8 @@ public function login(Request $request)
 }
 public function mdpOublier(Request $request)
 {
-    //dd($request->email);
-    Mail::to($request->email)->send(new ResetPasswordMail()); // ajout
+    dd($request->email);
+   
 }
 }
 
