@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthControllee;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminController;
 
 
 // Routes protégées par auth (vendeur)
