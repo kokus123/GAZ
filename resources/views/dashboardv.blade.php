@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gaz Express - Dashboard</title>
+  <title>Dashboard vendeur - Gaz Express</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
@@ -48,9 +48,9 @@
       <!-- Contenu principal -->
       <main class="col-md-9 col-lg-10 content">
         <h2>Bienvenue sur le Dashboard</h2>
-        <p>Ici, tu vois les statistiques principales :</p>
 
-        <div class="row g-4">
+        <!-- Statistiques -->
+        <div class="row g-4 mb-4">
           <div class="col-md-4">
             <div class="card shadow p-3">
               <h5>Commandes du jour</h5>
@@ -71,37 +71,83 @@
           </div>
         </div>
 
-        <hr>
+        <!-- CRUD Utilisateurs -->
+        <h3 class="mt-5">👥 Gestion des utilisateurs</h3>
+        @if(session('success'))
+          <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
 
-        <h4>Commandes récentes</h4>
-        <table class="table table-striped">
-          <thead>
+        <!-- Formulaire ajout utilisateur -->
+        <form action="{{ route('users.store') }}" method="POST" class="mb-4">
+          @csrf
+          <div class="row g-2">
+            <div class="col-md-3">
+              <input type="text" name="name" class="form-control" placeholder="Nom" required>
+            </div>
+            <div class="col-md-3">
+              <input type="email" name="email" class="form-control" placeholder="Email" required>
+            </div>
+            <div class="col-md-3">
+              <input type="password" name="password" class="form-control" placeholder="Mot de passe" required>
+            </div>
+            <div class="col-md-2">
+              <select name="role" class="form-select">
+                <option value="client">Client</option>
+                <option value="vendeur">Vendeur</option>
+              </select>
+            </div>
+            <div class="col-md-1">
+              <button type="submit" class="btn btn-success w-100">+</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Tableau des utilisateurs -->
+        <table class="table table-striped table-hover align-middle">
+          <thead class="table-dark">
             <tr>
-              <th>Client</th>
-              <th>Produit</th>
+              <th>ID</th>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Rôle</th>
               <th>Statut</th>
-              <th>Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
+            @foreach($users as $user)
             <tr>
-              <td>Jean Dupont</td>
-              <td>Bouteille Total 12kg</td>
-              <td><span class="badge bg-success">Livrée</span></td>
-              <td>21/08/2025</td>
+              <td>{{ $user->id }}</td>
+              <td>{{ $user->name }}</td>
+              <td>{{ $user->email }}</td>
+              <td>{{ ucfirst($user->role) }}</td>
+              <td>
+                @if($user->is_online)
+                  <span class="badge bg-success">En ligne</span>
+                @else
+                  <span class="badge bg-secondary">Hors ligne</span>
+                @endif
+              </td>
+              <td>
+                <!-- Modifier -->
+                <form action="{{ route('users.update', $user->id) }}" method="POST" class="d-inline">
+                  @csrf
+                  @method('PUT')
+                  <button class="btn btn-sm btn-primary">Modifier</button>
+                </form>
+                <!-- Supprimer -->
+                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                  @csrf
+                  @method('DELETE')
+                  <button class="btn btn-sm btn-danger">Supprimer</button>
+                </form>
+              </td>
             </tr>
-            <tr>
-              <td>Amina Diallo</td>
-              <td>Bouteille Camgaz 6kg</td>
-              <td><span class="badge bg-warning">En livraison</span></td>
-              <td>21/08/2025</td>
-            </tr>
+            @endforeach
           </tbody>
         </table>
       </main>
     </div>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

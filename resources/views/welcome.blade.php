@@ -95,21 +95,21 @@
                 <div class="feature-box animate_animated animate_zoomIn">
                     <i class="bi bi-lightning-charge text-success display-4"></i>
                     <h4 class="mt-3" style="color: green;">Rapidité</h4>
-                    <p>texte.</p>
+                    <p>Commandez votre gaz en quelques clics et recevez-le rapidement chez vous.</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-box animate_animated animate_zoomIn" style="animation-delay:0.2s;">
                     <i class="bi bi-shield-lock-fill text-warning display-4"></i>
                     <h4 class="mt-3" style="color: yellow;">Sécurité</h4>
-                    <p>texte</p>
+                    <p>Vos informations et vos transactions sont protégées, pour une tranquillité d’esprit totale</p>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="feature-box animate_animated animate_zoomIn" style="animation-delay:0.4s;">
                     <i class="bi bi-graph-up text-danger display-4"></i>
                     <h4 class="mt-3" style="color: red;">Efficacité</h4>
-                    <p>texte.</p>
+                    <p>Suivez vos commandes et gérez vos achats de gaz facilement et sans effort.</p>
                 </div>
             </div>
         </div>

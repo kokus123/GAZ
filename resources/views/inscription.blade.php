@@ -30,7 +30,7 @@
         <div class="mb-3">
           <label class="form-label">Rôle</label>
           <select name="role" class="form-select" required>
-            <option value="">-- Sélectionner --</option>
+            <!-- <option value="">-- Sélectionner --</option> -->
             <option value="client">Client</option>
             <option value="vendeur">Vendeur</option>
           </select>
@@ -49,7 +49,7 @@
       <hr>
 
       <div class="text-center">
-        <p><a href="{{ route('connexion') }}" class="text-decoration-none">Vous avez déjà un compte ? Connectez-vous</a></p>
+        <p><a href="{{ route('connexion') }}" class="text-decoration-black">Vous avez déjà un compte ? Connectez-vous</a></p>
         <p><a href="{{ route('welcome') }}" class="text-decoration-none">Retour au catalogue</a></p>
       </div>
     </div>

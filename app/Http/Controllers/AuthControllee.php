@@ -4,61 +4,59 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Hash;
 
 class AuthControllee extends Controller
 {
+    // Afficher formulaire inscription
     public function showInscriptionForm()
     {
         return view('inscription');
     }
-public function store(Request $request)
-{
-    $request->validate([
-        'name'     => 'required|string|max:255',
-        'email'    => 'required|email|unique:users',
-        'password' => 'required|min:6',
-        'role'     => 'required',
-    ]);
 
-    User::create([
-        'name'     => $request->name,
-        'email'    => $request->email,
-        'password' => Hash::make($request->password),
-        'role'     => $request->role,
-    ]);
+    // Enregistrer utilisateur
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users',
+            'password' => 'required|min:6', 
+            'role'     => 'required|in:client,vendeur',
+        ]);
 
-    // Après inscription → page de connexion
-    return redirect()->route('connexion')->with('success', 'Inscription réussie ! Veuillez vous connecter.');
-}
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => $request->role,
+        ]);
 
-public function login(Request $request)
-{
-    $request->validate([
-        'email'    => 'required|email',
-        'password' => 'required'
-    ]);
-
-    $credentials = $request->only('email', 'password');
-
-    if (Auth::attempt($credentials)) {
+        // Connexion automatique
+        Auth::login($user);
         $request->session()->regenerate();
-        // Après connexion → page dashboardv
-        return redirect()->route('dashboardv');
+        // Redirection selon rôle
+        return $user->role === 'vendeur'
+            ? redirect()->route('dashboardv') 
+            : redirect()->route('dashboardc');
     }
 
-    return back()->withErrors([
-        'email' => 'Vos identifiants sont incorrects'
-    ]);
-}
-public function mdpOublier(Request $request)
-{
-    dd($request->email);
-   
-}
-}
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
 
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
 
+            return $user->role === 'vendeur'
+                ? redirect()->route('dashboardv')
+                : redirect()->route('dashboardc');
+        }
+
+        return back()->withErrors(['email' => 'Identifiants incorrects']);
+    }
+}
