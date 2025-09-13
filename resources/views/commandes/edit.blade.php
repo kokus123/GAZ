@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Nouvelle Commande')
+@section('title', 'Modifier la Commande')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">Nouvelle Commande de Gaz</h1>
-            <a href="{{ route('commandes.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            <h1 class="text-3xl font-bold text-gray-800">Modifier la Commande #{{ $commande->numero_commande }}</h1>
+            <a href="{{ route('commandes.show', $commande) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                 Retour
             </a>
         </div>
@@ -22,8 +22,9 @@
             </div>
         @endif
 
-        <form action="{{ route('commandes.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('commandes.update', $commande) }}" method="POST" class="space-y-6">
             @csrf
+            @method('PUT')
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -31,9 +32,9 @@
                         Nom complet *
                     </label>
                     <input type="text" name="nom_client" id="nom_client" required 
-                           value="{{ old('nom_client', Auth::user()->name ?? '') }}" 
+                           value="{{ old('nom_client', $commande->nom_client) }}" 
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           placeholder="Votre nom complet">
+                           placeholder="Nom complet du client">
                 </div>
 
                 <div>
@@ -41,7 +42,7 @@
                         Téléphone *
                     </label>
                     <input type="tel" name="telephone" id="telephone" required 
-                           value="{{ old('telephone') }}" 
+                           value="{{ old('telephone', $commande->telephone) }}" 
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="Ex: 0123456789">
                 </div>
@@ -53,7 +54,7 @@
                         Quantité (bouteilles) *
                     </label>
                     <input type="number" name="quantite" id="quantite" required min="1" 
-                           value="{{ old('quantite') }}" 
+                           value="{{ old('quantite', $commande->quantite) }}" 
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="Nombre de bouteilles">
                 </div>
@@ -63,7 +64,7 @@
                         Prix unitaire (FCFA) *
                     </label>
                     <input type="number" name="prix_unitaire" id="prix_unitaire" required min="0" step="0.01" 
-                           value="{{ old('prix_unitaire', 15000) }}" 
+                           value="{{ old('prix_unitaire', $commande->prix_unitaire) }}" 
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="Prix par bouteille">
                 </div>
@@ -75,7 +76,7 @@
                 </label>
                 <textarea name="adresse_livraison" id="adresse_livraison" rows="3" required 
                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Adresse complète de livraison...">{{ old('adresse_livraison') }}</textarea>
+                          placeholder="Adresse complète de livraison...">{{ old('adresse_livraison', $commande->adresse_livraison) }}</textarea>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -84,7 +85,7 @@
                         Latitude (optionnel)
                     </label>
                     <input type="number" name="latitude" id="latitude" step="any" 
-                           value="{{ old('latitude') }}" 
+                           value="{{ old('latitude', $commande->latitude) }}" 
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="Ex: 4.123456">
                 </div>
@@ -94,11 +95,25 @@
                         Longitude (optionnel)
                     </label>
                     <input type="number" name="longitude" id="longitude" step="any" 
-                           value="{{ old('longitude') }}" 
+                           value="{{ old('longitude', $commande->longitude) }}" 
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="Ex: 9.123456">
                 </div>
             </div>
+
+            <div>
+                <label for="statut" class="block text-sm font-medium text-gray-700 mb-2">
+                    Statut *
+                    </label>
+                    <select name="statut" id="statut" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="en_attente" {{ old('statut', $commande->statut) == 'en_attente' ? 'selected' : '' }}>En attente</option>
+                        <option value="confirmée" {{ old('statut', $commande->statut) == 'confirmée' ? 'selected' : '' }}>Confirmée</option>
+                        <option value="en_livraison" {{ old('statut', $commande->statut) == 'en_livraison' ? 'selected' : '' }}>En livraison</option>
+                        <option value="livrée" {{ old('statut', $commande->statut) == 'livrée' ? 'selected' : '' }}>Livrée</option>
+                        <option value="annulée" {{ old('statut', $commande->statut) == 'annulée' ? 'selected' : '' }}>Annulée</option>
+                        <option value="payée" {{ old('statut', $commande->statut) == 'payée' ? 'selected' : '' }}>Payée</option>
+                    </select>
+                </div>
 
             <div>
                 <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
@@ -106,36 +121,15 @@
                 </label>
                 <textarea name="notes" id="notes" rows="3" 
                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="Instructions spéciales, horaires de livraison, etc...">{{ old('notes') }}</textarea>
-            </div>
-
-            <div class="bg-blue-50 p-4 rounded-lg">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <h3 class="text-sm font-medium text-blue-800">
-                            Informations importantes
-                        </h3>
-                        <div class="mt-2 text-sm text-blue-700">
-                            <p>• La localisation est obligatoire pour toute commande</p>
-                            <p>• Vous serez redirigé vers le vendeur le plus proche</p>
-                            <p>• Le paiement se fera après confirmation de la commande</p>
-                            <p>• Un reçu numérique sera généré après paiement</p>
-                        </div>
-                    </div>
-                </div>
+                          placeholder="Instructions spéciales, horaires de livraison, etc...">{{ old('notes', $commande->notes) }}</textarea>
             </div>
 
             <div class="flex justify-end space-x-4">
-                <a href="{{ route('commandes.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                <a href="{{ route('commandes.show', $commande) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                     Annuler
                 </a>
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    📦 Passer la Commande
+                    Mettre à jour
                 </button>
             </div>
         </form>

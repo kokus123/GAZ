@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Mes Commandes')
+@section('title', 'Gestion des Paiements')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">Mes Commandes</h1>
-            <a href="{{ route('commandes.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Nouvelle Commande
+            <h1 class="text-3xl font-bold text-gray-800">Gestion des Paiements</h1>
+            <a href="{{ route('paiements.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Nouveau Paiement
             </a>
         </div>
 
@@ -29,16 +29,16 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            ID
+                        </th>
+                        <th class="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Commande
                         </th>
                         <th class="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Client
-                        </th>
-                        <th class="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Quantité
-                        </th>
-                        <th class="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Montant
+                        </th>
+                        <th class="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Méthode
                         </th>
                         <th class="px-6 py-3 border-b border-gray-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Statut
@@ -52,56 +52,43 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($commandes as $commande)
+                    @forelse($paiements as $paiement)
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $commande->numero_commande }}
+                                {{ $paiement->id }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $commande->nom_client }}
+                                {{ $paiement->commande->numero_commande ?? 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $commande->quantite }} bouteilles
+                                {{ number_format($paiement->montant, 0, ',', ' ') }} FCFA
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ number_format($commande->prix_total, 0, ',', ' ') }} FCFA
+                                {{ ucfirst(str_replace('_', ' ', $paiement->methode_paiement)) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                    @if($commande->statut === 'en_attente') bg-yellow-100 text-yellow-800
-                                    @elseif($commande->statut === 'confirmée') bg-blue-100 text-blue-800
-                                    @elseif($commande->statut === 'en_livraison') bg-purple-100 text-purple-800
-                                    @elseif($commande->statut === 'livrée') bg-green-100 text-green-800
-                                    @elseif($commande->statut === 'annulée') bg-red-100 text-red-800
-                                    @elseif($commande->statut === 'payée') bg-green-100 text-green-800
+                                    @if($paiement->statut === 'en_attente') bg-yellow-100 text-yellow-800
+                                    @elseif($paiement->statut === 'payé') bg-green-100 text-green-800
+                                    @elseif($paiement->statut === 'échoué') bg-red-100 text-red-800
+                                    @elseif($paiement->statut === 'annulé') bg-gray-100 text-gray-800
                                     @else bg-gray-100 text-gray-800
                                     @endif">
-                                    {{ ucfirst(str_replace('_', ' ', $commande->statut)) }}
+                                    {{ ucfirst(str_replace('_', ' ', $paiement->statut)) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $commande->created_at->format('d/m/Y H:i') }}
+                                {{ $paiement->created_at->format('d/m/Y H:i') }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('commandes.show', $commande) }}" class="text-blue-600 hover:text-blue-900">
+                                    <a href="{{ route('paiements.show', $paiement) }}" class="text-blue-600 hover:text-blue-900">
                                         Voir
                                     </a>
-                                    @if($commande->statut === 'en_attente' && Auth::user()->isClient())
-                                        <form action="{{ route('commandes.annuler', $commande) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button type="submit" class="text-red-600 hover:text-red-900">
-                                                Annuler
-                                            </button>
-                                        </form>
-                                    @endif
-                                    @if($commande->statut === 'en_attente' && Auth::user()->isVendeur())
-                                        <form action="{{ route('commandes.confirmer', $commande) }}" method="POST" class="inline">
-                                            @csrf
-                                            <button type="submit" class="text-green-600 hover:text-green-900">
-                                                Confirmer
-                                            </button>
-                                        </form>
+                                    @if($paiement->statut === 'en_attente')
+                                        <a href="{{ route('paiements.verifier', $paiement) }}" class="text-green-600 hover:text-green-900">
+                                            Vérifier
+                                        </a>
                                     @endif
                                 </div>
                             </td>
@@ -109,7 +96,7 @@
                     @empty
                         <tr>
                             <td colspan="7" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
-                                Aucune commande trouvée
+                                Aucun paiement trouvé
                             </td>
                         </tr>
                     @endforelse
@@ -117,9 +104,9 @@
             </table>
         </div>
 
-        @if($commandes->hasPages())
+        @if($paiements->hasPages())
             <div class="mt-6">
-                {{ $commandes->links() }}
+                {{ $paiements->links() }}
             </div>
         @endif
     </div>
