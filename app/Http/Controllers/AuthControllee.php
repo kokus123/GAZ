@@ -66,7 +66,7 @@ class AuthControllee extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         
-        return redirect()->route('welcome');
+        return redirect('/');
     }
 
     public function mdpOublier(Request $request)

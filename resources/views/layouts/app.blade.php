@@ -39,15 +39,15 @@
                             <span class="text-gray-700">Bonjour, {{ Auth::user()->name }}</span>
                             
                             @if(Auth::user()->isAdmin())
-                                <a href="{{ route('admin.dashboard') }}" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">
+                                <a href="{{ route('dashboard') }}" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">
                                     Dashboard Admin
                                 </a>
                             @elseif(Auth::user()->isVendeur())
-                                <a href="{{ route('vendeur.dashboard') }}" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">
+                                <a href="{{ route('dashboardv') }}" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">
                                     Dashboard Vendeur
                                 </a>
                             @else
-                                <a href="{{ route('client.dashboard') }}" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">
+                                <a href="{{ route('dashboardc') }}" class="text-primary hover:text-secondary px-3 py-2 rounded-md text-sm font-medium">
                                     Mon Dashboard
                                 </a>
                             @endif

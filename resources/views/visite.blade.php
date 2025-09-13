@@ -1,243 +1,116 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Visite Gaz</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Bootstrap CSS (ajoutez le lien selon votre installation) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .custom-card { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-  </style>
-</head>
-<body>
-  <body class="bg-light">
+@extends('layouts.app')
 
-<!-- Barre de navigation avec bouton Dark/Light -->
-<nav class="navbar navbar-light bg-light px-3">
-  <span class="navbar-brand">Mon Site</span>
-  <button id="themeToggle" class="btn btn-outline-dark ms-auto">🌙 Mode Sombre</button>
-</nav>
+@section('title', 'Visite - GazApp')
 
-<div class="container py-5">
-  <h1 class="mb-4 text-center">Bienvenue</h1>
-  <p class="text-center">Clique sur le bouton pour activer le mode sombre ou clair.</p>
-  <div class="card p-3 shadow-sm">
-    <p>Exemple de carte pour voir le changement de thème.</p>
-  </div>
-</div>
-
-<script>
-  // On récupère le bouton
-  const themeToggle = document.getElementById('themeToggle');
-
-  // Quand on clique dessus
-  themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode'); // Ajoute/Enlève le mode sombre
-
-    // Change le texte du bouton selon le mode
-    if (document.body.classList.contains('dark-mode')) {
-      themeToggle.textContent = "☀️ Mode Clair";
-      themeToggle.classList.remove("btn-outline-dark");
-      themeToggle.classList.add("btn-outline-light");
-    } else {
-      themeToggle.textContent = "🌙 Mode Sombre";
-      themeToggle.classList.remove("btn-outline-light");
-      themeToggle.classList.add("btn-outline-dark");
-    }
-  });
-</script>
-  <!-- Navbar en haut -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container-fluid">
-      <!-- Icône panier à gauche -->
-      <a class="navbar-brand d-flex align-items-center" href="#">
-        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
-          <path d="M0 1.5A.5.5 0 0 1 .5 1h1a.5.5 0 0 1 .485.379L2.89 6H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 15H4a.5.5 0 0 1-.491-.408L1.01 2H.5a.5.5 0 0 1-.5-.5zm3.14 5l1.25 6.5h7.22l1.25-6.5H3.14z"/>
-        </svg>
-      </a>
-      <!-- Barre de recherche à gauche -->
-      <form class="d-flex ms-2" role="search" method="GET" action="#">
-        <input class="form-control me-2" type="search" placeholder="Type de gaz..." aria-label="Rechercher" name="search">
-        <button class="btn btn-outline-primary" type="submit">Rechercher</button>
-      </form>
-      <!-- Bouton burger pour mobile -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <!-- Menu à droite (vide ou liens à ajouter) -->
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <!-- Ajoutez des liens ici si besoin -->
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Carousel dans une card centrée et large -->
-  <div class="container mt-4 mb-4">
-    <div class="row justify-content-center">
-      <div class="col-12 col-lg-10">
-        <div class="card custom-card p-3">
-          <div id="carouselImages" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2500">
-            <div class="carousel-inner">
-              <!-- Ajoutez vos images ici -->
-              <div class="carousel-item active">
-                <img src="station.jpg" class="d-block w-100 rounded" alt="Image 1" style="max-height: 350px; object-fit: cover;">
-              </div>
-              <div class="carousel-item">
-                <img src="camion.jpg" class="d-block w-100 rounded" alt="Image 2" style="max-height: 350px; object-fit: cover;">
-              </div>
-              <div class="carousel-item">
-                <img src="feu.webp" class="d-block w-100 rounded" alt="Image 3" style="max-height: 350px; object-fit: cover;">
-              </div>
-              <!-- Ajoutez d'autres images si nécessaire -->
+@section('content')
+<div class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <div class="bg-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div class="text-center">
+                <h1 class="text-4xl font-extrabold text-white sm:text-5xl md:text-6xl">
+                    GazApp
+                </h1>
+                <p class="mt-3 max-w-md mx-auto text-base text-gray-200 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+                    Votre plateforme de commande de gaz domestique en ligne
+                </p>
+                <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+                    <div class="rounded-md shadow">
+                        <a href="{{ route('commandes.create') }}" 
+                           class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
+                            Commander du gaz
+                        </a>
+                    </div>
+                    <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
+                        <a href="{{ route('connexion') }}" 
+                           class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-transparent border-white hover:bg-white hover:text-primary md:py-4 md:text-lg md:px-10">
+                            Se connecter
+                        </a>
+                    </div>
+                </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Précédent</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselImages" data-bs-slide="next">
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Suivant</span>
-            </button>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-        <!-- Ajoutez d'autres images si nécessaire -->
-      </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselImages" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Précédent</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselImages" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Suivant</span>
-      </button>
-    </div>
-  </div>
 
-  <!-- Container pour les 3 cards -->
-  <div class="container mb-5">
-    <div class="row g-4 justify-content-center">
-    <!-- ... (vos cards ici, inchangées) ... -->
-    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-      <div class="card custom-card p-4 position-relative border-danger card-hover" style="width: 22rem;">
-      <!-- <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary" style="font-size:1.1rem; left: 18px; top: 18px;">
-        13kg
-      </span> -->
-      <img src="total.webp" class="card-img-top rounded" alt="Gaz">
-      <div class="card-body">
-        <h5 class="card-title text-center">Total</h5>
-        <p class="card-text text-center">Découvrez la performance et la fiabilité de cette catégorie.</p>
-        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#marqueModal">commander</button>
-      </div>
-      </div>
-    </div>
-    <!-- ... (autres cards de la première rangée) ... -->
-    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-      <div class="card custom-card p-4 position-relative border-primary card-hover" style="width: 22rem;">
-      <!-- <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary" style="font-size:1.1rem; left: 18px; top: 18px;">
-        35kg
-      </span> -->
-      <img src="tradex.jpg" class="card-img-top rounded" alt="Gaz">
-      <div class="card-body">
-        <h5 class="card-title text-center">Tradex</h5>
-        <p class="card-text text-center">Description du produit 4 avec détails importants.</p>
-        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#marqueModal">commander</button>
-      </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-      <div class="card custom-card p-4 position-relative border-success card-hover" style="width: 22rem;">
-      <!-- <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary" style="font-size:1.1rem; left: 18px; top: 18px;">
-        75kg
-      </span> -->
-      <img src="bocom.jpg" class="card-img-top rounded" alt="Gaz">
-      <div class="card-body">
-        <h5 class="card-title text-center">Bocom</h5>
-        <p class="card-text text-center">Description du produit 8 avec détails importants.</p>
-        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#marqueModal">commander</button>
-      </div>
-      </div>
-    </div>
-    </div>
-    <!-- Nouvelle rangée de 3 cards -->
-    <div class="row g-4 justify-content-center mt-2">
-    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-      <div class="card custom-card p-4 position-relative border-warning card-hover" style="width: 22rem;">
-      <!-- <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary" style="font-size:1.1rem; left: 18px; top: 18px;">
-        50kg
-      </span> -->
-      <img src="sctm.PNG" class="card-img-top rounded" alt="Gaz">
-      <div class="card-body">
-        <h5 class="card-title text-center">SCTM</h5>
-        <p class="card-text text-center">Description du produit 50kg avec détails importants.</p>
-        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#marqueModal">commander</button>
-      </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-      <div class="card custom-card p-4 position-relative card-hover" style="width: 22rem;">
-      <!-- <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary" style="font-size:1.1rem; left: 18px; top: 18px;">
-        90kg
-      </span> -->
-      <img src="90k.jpg" class="card-img-top rounded" alt="Gaz">
-      <div class="card-body">
-        <h5 class="card-title text-center">Catégorie 5</h5>
-        <p class="card-text text-center">Description du produit 90kg avec détails importants.</p>
-        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#marqueModal">commander</button>
-      </div>
-      </div>
-    </div>
-    <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
-      <div class="card custom-card p-4 position-relative card-hover" style="width: 22rem;">
-      <!-- <span class="position-absolute top-0 start-0 translate-middle badge rounded-pill bg-primary" style="font-size:1.1rem; left: 18px; top: 18px;">
-        120kg
-      </span> -->
-      <img src="120k.jpg" class="card-img-top rounded" alt="Gaz">
-      <div class="card-body">
-        <h5 class="card-title text-center">Catégorie 6</h5>
-        <p class="card-text text-center">Description du produit 120kg avec détails importants.</p>
-        <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#marqueModal">commander</button>
-      </div>
-      </div>
-    </div>
-    </div>
-  </div>
-  <style>
-    .card-hover {
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-    }
-    .card-hover:hover {
-      transform: translateY(-8px) scale(1.03);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-      z-index: 2;
-    }
-  </style>
+    <!-- Features Section -->
+    <div class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center">
+                <h2 class="text-base text-primary font-semibold tracking-wide uppercase">Fonctionnalités</h2>
+                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+                    Une solution complète pour vos besoins en gaz
+                </p>
+            </div>
 
-  <!-- Modal (structure minimale) -->
-  <div class="modal fade" id="marqueModal" tabindex="-1" aria-labelledby="marqueModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-      <h5 class="modal-title" id="marqueModalLabel">Inspection</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-      </div>
-      <div class="modal-body">
-      Détails de l'inspection ici.
-      </div>
-      <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-      </div>
-    </div>
-    </div>
-  </div>
+            <div class="mt-10">
+                <div class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
+                    <div class="relative">
+                        <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Commande rapide</p>
+                        <p class="mt-2 ml-16 text-base text-gray-500">
+                            Commandez votre gaz en quelques clics avec géolocalisation automatique
+                        </p>
+                    </div>
 
-  <!-- Bootstrap JS (ajoutez le lien selon votre installation) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+                    <div class="relative">
+                        <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                            </svg>
+                        </div>
+                        <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Paiement sécurisé</p>
+                        <p class="mt-2 ml-16 text-base text-gray-500">
+                            Paiement en ligne sécurisé via Mobile Money ou carte bancaire
+                        </p>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                            </svg>
+                        </div>
+                        <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Livraison rapide</p>
+                        <p class="mt-2 ml-16 text-base text-gray-500">
+                            Livraison à domicile par le vendeur le plus proche de chez vous
+                        </p>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="ml-16 text-lg leading-6 font-medium text-gray-900">Sécurité garantie</p>
+                        <p class="mt-2 ml-16 text-base text-gray-500">
+                            Signalement direct aux services de sécurité en cas de problème
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="bg-primary">
+        <div class="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-extrabold text-white sm:text-4xl">
+                <span class="block">Prêt à commencer ?</span>
+                <span class="block">Commandez votre gaz maintenant.</span>
+            </h2>
+            <p class="mt-4 text-lg leading-6 text-gray-200">
+                Rejoignez des milliers de clients satisfaits qui font confiance à GazApp
+            </p>
+            <a href="{{ route('inscription.form') }}" 
+               class="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white hover:bg-gray-50 sm:w-auto">
+                Créer un compte
+            </a>
+        </div>
+    </div>
+</div>
+@endsection

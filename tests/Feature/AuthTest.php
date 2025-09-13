@@ -125,7 +125,7 @@ class AuthTest extends TestCase
 
         $response = $this->actingAs($user)->get('/dashboardc');
         $response->assertStatus(200);
-        $response->assertSee('Dashboard Vendeur');
+        $response->assertSee('Mon Dashboard');
     }
 
     /**

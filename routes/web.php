@@ -45,18 +45,54 @@ Route::get('/connexion', function () {
     return view('connexion');
 })->name('connexion');
 
+Route::get('/login', function () {
+    return view('connexion');
+})->name('login');
+
 Route::post('/connexion', [AuthControllee::class, 'login'])->name('connexion.login');
+Route::post('/login', [AuthControllee::class, 'login'])->name('login');
 
 // Inscription
 Route::get('/inscription', [AuthControllee::class, 'showInscriptionForm'])->name('inscription.form');
+Route::get('/register', [AuthControllee::class, 'showInscriptionForm'])->name('register');
+
 Route::post('/inscription', [AuthControllee::class, 'store'])->name('inscription.store');
+Route::post('/register', [AuthControllee::class, 'store'])->name('register');
 
 // Mot de passe oublié
 Route::get('/Mot-de-passe', function () {
     return view('Mot-de-passe');
 })->name('forgot');
 
+Route::get('/forgot-password', function () {
+    return view('Mot-de-passe');
+})->name('password.request');
+
 Route::post('/Mot-de-passe', [AuthControllee::class, 'mdpOublier'])->name('mdpOublier');
+Route::post('/forgot-password', [AuthControllee::class, 'mdpOublier'])->name('password.email');
+
+// Réinitialisation de mot de passe
+Route::get('/reset-password/{token}', function () {
+    return view('Mot-de-passe');
+})->name('password.reset');
+
+Route::post('/reset-password', [AuthControllee::class, 'mdpOublier'])->name('password.update');
+
+// Confirmation de mot de passe
+Route::get('/confirm-password', function () {
+    return view('connexion');
+})->name('password.confirm');
+
+Route::post('/confirm-password', [AuthControllee::class, 'login'])->name('password.confirm');
+
+// Vérification d'email
+Route::get('/verify-email', function () {
+    return view('connexion');
+})->name('verification.notice');
+
+Route::get('/verify-email/{id}/{hash}', function () {
+    return redirect('/dashboard');
+})->name('verification.verify');
 
 // Déconnexion
 Route::post('/logout', [AuthControllee::class, 'logout'])->name('logout');
