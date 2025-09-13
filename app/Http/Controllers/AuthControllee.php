@@ -59,4 +59,25 @@ class AuthControllee extends Controller
 
         return back()->withErrors(['email' => 'Identifiants incorrects']);
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
+        return redirect()->route('welcome');
+    }
+
+    public function mdpOublier(Request $request)
+    {
+        // Logique de réinitialisation de mot de passe
+        return back()->with('success', 'Instructions envoyées par email');
+    }
+
+    public function storeCommande(Request $request)
+    {
+        // Rediriger vers le formulaire de commande
+        return redirect()->route('commandes.create');
+    }
 }

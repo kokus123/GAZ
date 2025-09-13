@@ -23,13 +23,13 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update($request->all());
-        return redirect()->route('admin.users.index')->with('success', 'Utilisateur mis à jour');
+        return redirect()->route('Admin.users.index')->with('success', 'Utilisateur mis à jour');
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'Utilisateur supprimé');
+        return redirect()->route('Admin.users.index')->with('success', 'Utilisateur supprimé');
     }
 }

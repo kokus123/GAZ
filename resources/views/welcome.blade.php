@@ -1,127 +1,133 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Page d'accueil</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap & Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Animations -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <style>
-        .navbar {
-            background: linear-gradient(to orange);
-        }
-        .navbar .nav-link {
-            color: rgb(184, 137, 10) !important;
-            font-weight: bold;
-        }
-        .navbar .nav-link:hover {
-            color: black !important;
-        }
-        header {
-            background: url('https://images.unsplash.com/photo-1581093448790-ffea0f68b8a2') center/cover no-repeat;
-            color: rgba(238, 242, 243, 0.945);
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            position: relative;
-        }
-        header::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-        }
-        header .content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .feature-box {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: 0.3s;
-        }
-        .feature-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 15px 0;
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
+@extends('layouts.app')
 
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg">
-    <div class="container">
-        <a class="navbar-brand text-dark fw-bold" href="#"><i class="bi bi-fire"></i> GAZ EXPRESS</a>
-        <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="menu">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item"><a class="nav-link btn btn-outline-warning" href="/connexion">Se connecter</a></li>
-                <li class="nav-item"><a class="btn btn-outline-warning grap-5 nav-link"href="/inscription">S'inscrire</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+@section('title', 'Accueil - GazApp')
 
-<!-- Section de titre -->
-<header>
-    <div class="container content animate_animated animate_fadeInDown">
-        <h1 class="display-4 fw-bold">Bienvenue sur GAZ EXPRESS</h1>
-        <p class="lead">Commandez facilement vos bouteilles de gaz où que vous soyez</p>
-    </div>
-</header>
-
-<!-- Avantages de la plateforme -->
-<section class="py-5">
-    <div class="container text-center">
-        <h2 class="mb-5 animate_animated animate_fadeIn">Pourquoi Notre Plateforme?</h2>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-box animate_animated animate_zoomIn">
-                    <i class="bi bi-lightning-charge text-success display-4"></i>
-                    <h4 class="mt-3" style="color: green;">Rapidité</h4>
-                    <p>Commandez votre gaz en quelques clics et recevez-le rapidement chez vous.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-box animate_animated animate_zoomIn" style="animation-delay:0.2s;">
-                    <i class="bi bi-shield-lock-fill text-warning display-4"></i>
-                    <h4 class="mt-3" style="color: yellow;">Sécurité</h4>
-                    <p>Vos informations et vos transactions sont protégées, pour une tranquillité d’esprit totale</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-box animate_animated animate_zoomIn" style="animation-delay:0.4s;">
-                    <i class="bi bi-graph-up text-danger display-4"></i>
-                    <h4 class="mt-3" style="color: red;">Efficacité</h4>
-                    <p>Suivez vos commandes et gérez vos achats de gaz facilement et sans effort.</p>
-                </div>
+@section('content')
+<!-- Hero Section -->
+<div class="bg-gradient-to-r from-primary to-secondary text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                Commandez votre gaz en ligne
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-blue-100">
+                Livraison rapide, paiement sécurisé, service de qualité
+            </p>
+            <div class="space-x-4">
+                @auth
+                    <a href="{{ route('commandes.create') }}" 
+                       class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300">
+                        Nouvelle Commande
+                    </a>
+                @else
+                    <a href="{{ route('inscription.form') }}" 
+                       class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300">
+                        Commencer
+                    </a>
+                @endauth
+                <a href="{{ route('visite') }}" 
+                   class="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-primary transition duration-300">
+                    En savoir plus
+                </a>
             </div>
         </div>
     </div>
-</section>
+</div>
 
-<!-- Pied de page -->
-<footer>
-    &copy; <?php echo date("Y"); ?> Gaz express - Tous droits réservés
-</footer>
+<!-- Features Section -->
+<div class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Pourquoi choisir GazApp ?</h2>
+            <p class="text-lg text-gray-600">Une solution complète pour vos besoins en gaz domestique</p>
+        </div>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Livraison Rapide</h3>
+                <p class="text-gray-600">Livraison sous 24h avec géolocalisation pour trouver le vendeur le plus proche</p>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Paiement Sécurisé</h3>
+                <p class="text-gray-600">Mobile Money, carte bancaire ou espèces - paiement 100% sécurisé</p>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-primary text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Sécurité Garantie</h3>
+                <p class="text-gray-600">Signalement direct à la police en cas de problème - votre sécurité est notre priorité</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How it works Section -->
+<div class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Comment ça marche ?</h2>
+            <p class="text-lg text-gray-600">3 étapes simples pour commander votre gaz</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="bg-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-2xl font-bold text-primary">1</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Commandez en ligne</h3>
+                <p class="text-gray-600">Remplissez le formulaire avec vos informations et votre localisation</p>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-2xl font-bold text-primary">2</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Payez sécurisé</h3>
+                <p class="text-gray-600">Choisissez votre méthode de paiement préférée et payez en toute sécurité</p>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-white rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-2xl font-bold text-primary">3</span>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Recevez votre gaz</h3>
+                <p class="text-gray-600">Livraison rapide par le vendeur le plus proche de chez vous</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="py-16 bg-primary text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-4">Prêt à commander ?</h2>
+        <p class="text-xl mb-8 text-blue-100">Rejoignez des milliers de clients satisfaits</p>
+        @auth
+            <a href="{{ route('commandes.create') }}" 
+               class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300">
+                Créer une commande
+            </a>
+        @else
+            <a href="{{ route('inscription.form') }}" 
+               class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300">
+                S'inscrire maintenant
+            </a>
+        @endauth
+    </div>
+</div>
+@endsection
