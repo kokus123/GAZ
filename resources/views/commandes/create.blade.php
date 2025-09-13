@@ -25,7 +25,7 @@
         <form action="{{ route('commandes.store') }}" method="POST" class="space-y-6">
             @csrf
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label for="nom_client" class="block text-sm font-medium text-gray-700 mb-2">
                         Nom complet *
@@ -45,9 +45,32 @@
                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="Ex: 0123456789">
                 </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email (optionnel)
+                    </label>
+                    <input type="email" name="email" id="email" 
+                           value="{{ old('email', Auth::user()->email ?? '') }}" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           placeholder="votre@email.com">
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label for="type_gaz" class="block text-sm font-medium text-gray-700 mb-2">
+                        Type de gaz *
+                    </label>
+                    <select name="type_gaz" id="type_gaz" required 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Sélectionner le type de gaz</option>
+                        <option value="propane" {{ old('type_gaz') == 'propane' ? 'selected' : '' }}>Propane</option>
+                        <option value="butane" {{ old('type_gaz') == 'butane' ? 'selected' : '' }}>Butane</option>
+                        <option value="mixte" {{ old('type_gaz') == 'mixte' ? 'selected' : '' }}>Mixte</option>
+                    </select>
+                </div>
+
                 <div>
                     <label for="quantite" class="block text-sm font-medium text-gray-700 mb-2">
                         Quantité (bouteilles) *

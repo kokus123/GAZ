@@ -34,7 +34,7 @@
               </td>
               <td>
                 <!-- Modifier -->
-                <form action="{{ route('users.update', $user->id) }}" method="POST" class="d-inline">
+                <form action="{{ route('Admin.users.update', $user->id) }}" method="POST" class="d-inline">
                   @csrf
                   @method('PUT')
                   <button class="btn btn-sm btn-primary">Modifier</button>
