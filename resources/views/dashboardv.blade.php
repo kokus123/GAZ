@@ -1,153 +1,182 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard vendeur - Gaz Express</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-    }
-    .sidebar {
-      height: 100vh;
-      background: #212529;
-      color: white;
-      padding-top: 20px;
-    }
-    .sidebar a {
-      color: white;
-      text-decoration: none;
-      display: block;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .sidebar a:hover {
-      background: #495057;
-    }
-    .content {
-      padding: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container-fluid">
-    <div class="row">
-      <!-- Menu latéral -->
-      <nav class="col-md-3 col-lg-2 sidebar">
-        <h4 class="text-center">Gaz Express</h4>
-        <a href="#">🏠 Tableau de bord</a>
-        <a href="#">🛒 Mes commandes</a>
-        <a href="#">📦 Produits</a>
-        <a href="#">👥 Clients</a>
-        <a href="#">🚚 Livraisons</a>
-        <a href="#">⚙️ Paramètres</a>
-      </nav>
+@extends('layouts.app')
 
-      <!-- Contenu principal -->
-      <main class="col-md-9 col-lg-10 content">
-        <h2>Bienvenue sur le Dashboard</h2>
+@section('title', 'Dashboard Vendeur - GazApp')
 
-        <!-- Statistiques -->
-        <div class="row g-4 mb-4">
-          <div class="col-md-4">
-            <div class="card shadow p-3">
-              <h5>Commandes du jour</h5>
-              <p><strong>25</strong> commandes</p>
+@section('content')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- En-tête -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Dashboard Vendeur</h1>
+        <p class="mt-2 text-gray-600">Gérez vos commandes et votre stock</p>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Mes Commandes</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ $stats['mes_commandes'] ?? 0 }}</dd>
+                        </dl>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card shadow p-3">
-              <h5>Ventes totales</h5>
-              <p><strong>450</strong> bouteilles</p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="card shadow p-3">
-              <h5>Clients actifs</h5>
-              <p><strong>120</strong> clients</p>
-            </div>
-          </div>
         </div>
 
-        <!-- CRUD Utilisateurs -->
-        <h3 class="mt-5">👥 Gestion des utilisateurs</h3>
-        @if(session('success'))
-          <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">En Attente</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ $stats['commandes_en_attente'] ?? 0 }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <!-- Formulaire ajout utilisateur -->
-        <form action="{{ route('users.store') }}" method="POST" class="mb-4">
-          @csrf
-          <div class="row g-2">
-            <div class="col-md-3">
-              <input type="text" name="name" class="form-control" placeholder="Nom" required>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Livrées</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ $stats['commandes_livrees'] ?? 0 }}</dd>
+                        </dl>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-3">
-              <input type="email" name="email" class="form-control" placeholder="Email" required>
-            </div>
-            <div class="col-md-3">
-              <input type="password" name="password" class="form-control" placeholder="Mot de passe" required>
-            </div>
-            <div class="col-md-2">
-              <select name="role" class="form-select">
-                <option value="client">Client</option>
-                <option value="vendeur">Vendeur</option>
-              </select>
-            </div>
-            <div class="col-md-1">
-              <button type="submit" class="btn btn-success w-100">+</button>
-            </div>
-          </div>
-        </form>
+        </div>
 
-        <!-- Tableau des utilisateurs -->
-        <table class="table table-striped table-hover align-middle">
-          <thead class="table-dark">
-            <tr>
-              <th>ID</th>
-              <th>Nom</th>
-              <th>Email</th>
-              <th>Rôle</th>
-              <th>Statut</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach($users as $user)
-            <tr>
-              <td>{{ $user->id }}</td>
-              <td>{{ $user->name }}</td>
-              <td>{{ $user->email }}</td>
-              <td>{{ ucfirst($user->role) }}</td>
-              <td>
-                @if($user->is_online)
-                  <span class="badge bg-success">En ligne</span>
-                @else
-                  <span class="badge bg-secondary">Hors ligne</span>
-                @endif
-              </td>
-              <td>
-                <!-- Modifier -->
-                <form action="{{ route('users.update', $user->id) }}" method="POST" class="d-inline">
-                  @csrf
-                  @method('PUT')
-                  <button class="btn btn-sm btn-primary">Modifier</button>
-                </form>
-                <!-- Supprimer -->
-                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
-                  @csrf
-                  @method('DELETE')
-                  <button class="btn btn-sm btn-danger">Supprimer</button>
-                </form>
-              </td>
-            </tr>
-            @endforeach
-          </tbody>
-        </table>
-      </main>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Stock Total</dt>
+                            <dd class="text-lg font-medium text-gray-900">{{ $stats['stock_total'] ?? 0 }} kg</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</body>
-</html>
+
+    <!-- Actions rapides -->
+    <div class="bg-white shadow rounded-lg mb-8">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Actions Rapides</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="{{ route('commandes.index') }}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-secondary">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Mes Commandes
+                </a>
+                
+                <a href="{{ route('stocks.index') }}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                    </svg>
+                    Gérer le Stock
+                </a>
+                
+                <a href="{{ route('livraisons.index') }}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                    </svg>
+                    Livraisons
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Commandes récentes -->
+    @if(isset($commandes_recentes) && $commandes_recentes->count() > 0)
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Mes Commandes Récentes</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Commande</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantité</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($commandes_recentes as $commande)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                {{ $commande->numero_commande }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $commande->client->name ?? 'N/A' }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $commande->quantite }} kg
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ number_format($commande->prix_total, 0, ',', ' ') }} FCFA
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    @if($commande->statut === 'en_attente') bg-yellow-100 text-yellow-800
+                                    @elseif($commande->statut === 'confirmee') bg-blue-100 text-blue-800
+                                    @elseif($commande->statut === 'en_cours') bg-purple-100 text-purple-800
+                                    @elseif($commande->statut === 'livree') bg-green-100 text-green-800
+                                    @elseif($commande->statut === 'annulee') bg-red-100 text-red-800
+                                    @endif">
+                                    {{ ucfirst(str_replace('_', ' ', $commande->statut)) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <a href="{{ route('commandes.show', $commande) }}" 
+                                   class="text-primary hover:text-secondary mr-3">Voir</a>
+                                @if($commande->statut === 'en_attente')
+                                    <form method="POST" action="{{ route('commandes.confirmer', $commande) }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-green-600 hover:text-green-900">Confirmer</button>
+                                    </form>
+                                @endif
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    @endif
+</div>
+@endsection

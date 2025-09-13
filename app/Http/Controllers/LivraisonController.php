@@ -2,63 +2,90 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Livraison;
+use App\Models\Commande;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class LivraisonController
+class LivraisonController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Afficher la liste des livraisons
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        
+        if ($user->isAdmin()) {
+            $livraisons = Livraison::with(['commande', 'vendeur'])->paginate(15);
+        } elseif ($user->isVendeur()) {
+            $livraisons = Livraison::with(['commande'])
+                ->where('vendeur_id', $user->id)
+                ->paginate(15);
+        } else {
+            $livraisons = Livraison::with(['vendeur'])
+                ->whereHas('commande', function($query) use ($user) {
+                    $query->where('client_id', $user->id);
+                })
+                ->paginate(15);
+        }
+
+        return view('livraisons.index', compact('livraisons'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Afficher une livraison spécifique
      */
-    public function create()
+    public function show(Livraison $livraison)
     {
-        //
+        $this->authorize('view', $livraison);
+        $livraison->load(['commande.client', 'vendeur']);
+        return view('livraisons.show', compact('livraison'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Démarrer une livraison
      */
-    public function store(Request $request)
+    public function demarrer(Livraison $livraison)
     {
-        //
+        $this->authorize('update', $livraison);
+        
+        if ($livraison->isProgrammee()) {
+            $livraison->demarrer();
+            return back()->with('success', 'Livraison démarrée avec succès !');
+        }
+
+        return back()->withErrors(['error' => 'Cette livraison ne peut pas être démarrée.']);
     }
 
     /**
-     * Display the specified resource.
+     * Finaliser une livraison
      */
-    public function show(string $id)
+    public function finaliser(Livraison $livraison)
     {
-        //
+        $this->authorize('update', $livraison);
+        
+        if ($livraison->isEnCours()) {
+            $livraison->finaliser();
+            
+            // Mettre à jour le statut de la commande
+            $livraison->commande->update(['statut' => 'livree']);
+            
+            return back()->with('success', 'Livraison finalisée avec succès !');
+        }
+
+        return back()->withErrors(['error' => 'Cette livraison ne peut pas être finalisée.']);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Marquer une livraison comme échec
      */
-    public function edit(string $id)
+    public function echec(Livraison $livraison)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $this->authorize('update', $livraison);
+        
+        $livraison->marquerEchec();
+        
+        return back()->with('success', 'Livraison marquée comme échec.');
     }
 }

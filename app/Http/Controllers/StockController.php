@@ -2,63 +2,117 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class StockController
+class StockController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Afficher la liste des stocks
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        
+        if ($user->isAdmin()) {
+            $stocks = Stock::with('vendeur')->paginate(15);
+        } else {
+            $stocks = Stock::where('vendeur_id', $user->id)->paginate(15);
+        }
+
+        return view('stocks.index', compact('stocks'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Afficher le formulaire de création
      */
     public function create()
     {
-        //
+        return view('stocks.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Créer un nouveau stock
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'type_gaz' => 'required|string|max:255',
+            'quantite_disponible' => 'required|integer|min:0',
+            'quantite_minimum' => 'required|integer|min:0',
+            'prix_unitaire' => 'required|numeric|min:0',
+            'unite' => 'required|string|max:50',
+            'description' => 'nullable|string|max:1000'
+        ]);
+
+        Stock::create([
+            'vendeur_id' => Auth::id(),
+            'type_gaz' => $request->type_gaz,
+            'quantite_disponible' => $request->quantite_disponible,
+            'quantite_minimum' => $request->quantite_minimum,
+            'prix_unitaire' => $request->prix_unitaire,
+            'unite' => $request->unite,
+            'description' => $request->description,
+            'disponible' => true
+        ]);
+
+        return redirect()->route('stocks.index')
+            ->with('success', 'Stock créé avec succès !');
     }
 
     /**
-     * Display the specified resource.
+     * Afficher un stock spécifique
      */
-    public function show(string $id)
+    public function show(Stock $stock)
     {
-        //
+        $this->authorize('view', $stock);
+        $stock->load('vendeur');
+        return view('stocks.show', compact('stock'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Afficher le formulaire d'édition
      */
-    public function edit(string $id)
+    public function edit(Stock $stock)
     {
-        //
+        $this->authorize('update', $stock);
+        return view('stocks.edit', compact('stock'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * Mettre à jour un stock
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Stock $stock)
     {
-        //
+        $this->authorize('update', $stock);
+        
+        $request->validate([
+            'type_gaz' => 'required|string|max:255',
+            'quantite_disponible' => 'required|integer|min:0',
+            'quantite_minimum' => 'required|integer|min:0',
+            'prix_unitaire' => 'required|numeric|min:0',
+            'unite' => 'required|string|max:50',
+            'description' => 'nullable|string|max:1000',
+            'disponible' => 'boolean'
+        ]);
+
+        $stock->update($request->all());
+
+        return redirect()->route('stocks.index')
+            ->with('success', 'Stock mis à jour avec succès !');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Supprimer un stock
      */
-    public function destroy(string $id)
+    public function destroy(Stock $stock)
     {
-        //
+        $this->authorize('delete', $stock);
+        
+        $stock->delete();
+
+        return redirect()->route('stocks.index')
+            ->with('success', 'Stock supprimé avec succès !');
     }
 }
