@@ -14,11 +14,11 @@ class GeolocalisationService
         $dLat = deg2rad($lat2 - $lat1);
         $dLon = deg2rad($lon2 - $lon1);
 
-        $a = sin($dLat/2) * sin($dLat/2) +
+        $a = sin($dLat / 2) * sin($dLat / 2) +
              cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($dLon/2) * sin($dLon/2);
+             sin($dLon / 2) * sin($dLon / 2);
 
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earthRadius * $c;
     }
@@ -42,7 +42,7 @@ class GeolocalisationService
     public function validerAdresse($adresse)
     {
         // Simulation - dans une vraie app, valider avec une API
-        return !empty(trim($adresse)) && strlen($adresse) > 10;
+        return ! empty(trim($adresse)) && strlen($adresse) > 10;
     }
 
     /**
@@ -60,6 +60,7 @@ class GeolocalisationService
     {
         // Estimation : 30 km/h en moyenne en ville
         $vitesseMoyenne = 30;
+
         return round(($distanceKm / $vitesseMoyenne) * 60);
     }
 }

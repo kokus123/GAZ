@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Stock extends Model
 {
@@ -68,8 +68,10 @@ class Stock extends Model
     {
         if ($this->quantite_disponible >= $quantite) {
             $this->decrement('quantite_disponible', $quantite);
+
             return true;
         }
+
         return false;
     }
 

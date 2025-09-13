@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Paiement;
 use App\Models\Commande;
+use App\Models\Paiement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,18 +15,18 @@ class PaiementController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user->isAdmin()) {
             $paiements = Paiement::with(['commande.client', 'commande.vendeur'])->paginate(15);
         } elseif ($user->isVendeur()) {
             $paiements = Paiement::with(['commande.client'])
-                ->whereHas('commande', function($query) use ($user) {
+                ->whereHas('commande', function ($query) use ($user) {
                     $query->where('vendeur_id', $user->id);
                 })
                 ->paginate(15);
         } else {
             $paiements = Paiement::with(['commande.vendeur'])
-                ->whereHas('commande', function($query) use ($user) {
+                ->whereHas('commande', function ($query) use ($user) {
                     $query->where('client_id', $user->id);
                 })
                 ->paginate(15);
@@ -42,6 +42,7 @@ class PaiementController extends Controller
     {
         $this->authorize('view', $paiement);
         $paiement->load(['commande.client', 'commande.vendeur', 'reçus']);
+
         return view('paiements.show', compact('paiement'));
     }
 
@@ -52,7 +53,7 @@ class PaiementController extends Controller
     {
         $commandeId = $request->get('commande_id');
         $commande = null;
-        
+
         if ($commandeId) {
             $commande = Commande::findOrFail($commandeId);
             $this->authorize('view', $commande);
@@ -72,7 +73,7 @@ class PaiementController extends Controller
             'numero_telephone' => 'required_if:methode,mobile_money|string|max:20',
             'operateur' => 'required_if:methode,mobile_money|in:orange,mtn,moov',
             'numero_carte' => 'required_if:methode,carte_bancaire|string|max:20',
-            'type_carte' => 'required_if:methode,carte_bancaire|in:visa,mastercard'
+            'type_carte' => 'required_if:methode,carte_bancaire|in:visa,mastercard',
         ]);
 
         $commande = Commande::findOrFail($request->commande_id);
@@ -86,7 +87,7 @@ class PaiementController extends Controller
         // Créer le paiement
         $paiement = Paiement::create([
             'commande_id' => $commande->id,
-            'numero_transaction' => 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+            'numero_transaction' => 'TXN-'.date('YmdHis').'-'.strtoupper(substr(md5(uniqid()), 0, 8)),
             'montant' => $commande->prix_total,
             'methode' => $request->methode,
             'statut' => 'en_attente',
@@ -94,8 +95,8 @@ class PaiementController extends Controller
             'operateur' => $request->operateur,
             'details_transaction' => json_encode([
                 'numero_carte' => $request->numero_carte,
-                'type_carte' => $request->type_carte
-            ])
+                'type_carte' => $request->type_carte,
+            ]),
         ]);
 
         // Traiter le paiement selon la méthode
@@ -115,16 +116,16 @@ class PaiementController extends Controller
     {
         // Simulation de traitement Mobile Money
         $success = rand(1, 10) <= 8; // 80% de succès
-        
+
         if ($success) {
             $paiement->valider();
             $paiement->commande->update(['statut' => 'confirmee']);
-            
+
             return redirect()->route('paiements.show', $paiement)
                 ->with('success', 'Paiement Mobile Money effectué avec succès !');
         } else {
             $paiement->marquerEchec();
-            
+
             return back()->withErrors(['error' => 'Échec du paiement Mobile Money. Veuillez réessayer.']);
         }
     }
@@ -136,16 +137,16 @@ class PaiementController extends Controller
     {
         // Simulation de traitement carte bancaire
         $success = rand(1, 10) <= 7; // 70% de succès
-        
+
         if ($success) {
             $paiement->valider();
             $paiement->commande->update(['statut' => 'confirmee']);
-            
+
             return redirect()->route('paiements.show', $paiement)
                 ->with('success', 'Paiement par carte effectué avec succès !');
         } else {
             $paiement->marquerEchec();
-            
+
             return back()->withErrors(['error' => 'Paiement par carte refusé. Veuillez vérifier vos informations.']);
         }
     }
@@ -166,11 +167,11 @@ class PaiementController extends Controller
     public function valider(Paiement $paiement)
     {
         $this->authorize('update', $paiement);
-        
+
         if ($paiement->isEnAttente()) {
             $paiement->valider();
             $paiement->commande->update(['statut' => 'confirmee']);
-            
+
             return back()->with('success', 'Paiement validé avec succès !');
         }
 
@@ -183,9 +184,9 @@ class PaiementController extends Controller
     public function echec(Paiement $paiement)
     {
         $this->authorize('update', $paiement);
-        
+
         $paiement->marquerEchec();
-        
+
         return back()->with('success', 'Paiement marqué comme échec.');
     }
 }

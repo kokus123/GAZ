@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Services\PaymentService;
 use App\Models\Commande;
 use App\Models\Paiement;
+use App\Services\PaymentService;
+use Illuminate\Http\Request;
 
 class PaymentServiceController extends Controller
 {
@@ -24,11 +24,11 @@ class PaymentServiceController extends Controller
         $request->validate([
             'commande_id' => 'required|exists:commandes,id',
             'numero_telephone' => 'required|string|max:20',
-            'operateur' => 'required|in:orange,mtn,moov'
+            'operateur' => 'required|in:orange,mtn,moov',
         ]);
 
         $commande = Commande::findOrFail($request->commande_id);
-        
+
         $result = $this->paymentService->initierPaiementMobileMoney(
             $commande,
             $request->numero_telephone,
@@ -39,13 +39,13 @@ class PaymentServiceController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => $result['message'],
-                'paiement' => $result['paiement']
+                'paiement' => $result['paiement'],
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => $result['message']
+            'message' => $result['message'],
         ], 400);
     }
 
@@ -57,11 +57,11 @@ class PaymentServiceController extends Controller
         $request->validate([
             'commande_id' => 'required|exists:commandes,id',
             'numero_carte' => 'required|string|max:20',
-            'type_carte' => 'required|in:visa,mastercard'
+            'type_carte' => 'required|in:visa,mastercard',
         ]);
 
         $commande = Commande::findOrFail($request->commande_id);
-        
+
         $result = $this->paymentService->traiterPaiementCarte(
             $commande,
             $request->only(['numero_carte', 'type_carte'])
@@ -71,13 +71,13 @@ class PaymentServiceController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => $result['message'],
-                'paiement' => $result['paiement']
+                'paiement' => $result['paiement'],
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => $result['message']
+            'message' => $result['message'],
         ], 400);
     }
 
@@ -87,11 +87,11 @@ class PaymentServiceController extends Controller
     public function verifier(Paiement $paiement)
     {
         $isValid = $this->paymentService->verifierStatutPaiement($paiement);
-        
+
         return response()->json([
             'success' => true,
             'valide' => $isValid,
-            'statut' => $paiement->statut
+            'statut' => $paiement->statut,
         ]);
     }
 }

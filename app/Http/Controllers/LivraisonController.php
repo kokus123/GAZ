@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Livraison;
 use App\Models\Commande;
-use Illuminate\Http\Request;
+use App\Models\Livraison;
 use Illuminate\Support\Facades\Auth;
 
 class LivraisonController extends Controller
@@ -15,7 +14,7 @@ class LivraisonController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user->isAdmin()) {
             $livraisons = Livraison::with(['commande', 'vendeur'])->paginate(15);
         } elseif ($user->isVendeur()) {
@@ -24,7 +23,7 @@ class LivraisonController extends Controller
                 ->paginate(15);
         } else {
             $livraisons = Livraison::with(['vendeur'])
-                ->whereHas('commande', function($query) use ($user) {
+                ->whereHas('commande', function ($query) use ($user) {
                     $query->where('client_id', $user->id);
                 })
                 ->paginate(15);
@@ -40,6 +39,7 @@ class LivraisonController extends Controller
     {
         $this->authorize('view', $livraison);
         $livraison->load(['commande.client', 'vendeur']);
+
         return view('livraisons.show', compact('livraison'));
     }
 
@@ -49,9 +49,10 @@ class LivraisonController extends Controller
     public function demarrer(Livraison $livraison)
     {
         $this->authorize('update', $livraison);
-        
+
         if ($livraison->isProgrammee()) {
             $livraison->demarrer();
+
             return back()->with('success', 'Livraison démarrée avec succès !');
         }
 
@@ -64,13 +65,13 @@ class LivraisonController extends Controller
     public function finaliser(Livraison $livraison)
     {
         $this->authorize('update', $livraison);
-        
+
         if ($livraison->isEnCours()) {
             $livraison->finaliser();
-            
+
             // Mettre à jour le statut de la commande
             $livraison->commande->update(['statut' => 'livree']);
-            
+
             return back()->with('success', 'Livraison finalisée avec succès !');
         }
 
@@ -83,9 +84,9 @@ class LivraisonController extends Controller
     public function echec(Livraison $livraison)
     {
         $this->authorize('update', $livraison);
-        
+
         $livraison->marquerEchec();
-        
+
         return back()->with('success', 'Livraison marquée comme échec.');
     }
 }

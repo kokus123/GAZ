@@ -1,18 +1,18 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthControllee;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommandeController;
-use App\Http\Controllers\StockController;
-use App\Http\Controllers\PaiementController;
-use App\Http\Controllers\LivraisonController;
-use App\Http\Controllers\SignalementController;
-use App\Http\Controllers\ReçuController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\GeolocalisationController;
+use App\Http\Controllers\LivraisonController;
+use App\Http\Controllers\PaiementController;
 use App\Http\Controllers\PaymentServiceController;
+use App\Http\Controllers\ReçuController;
+use App\Http\Controllers\SignalementController;
+use App\Http\Controllers\StockController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,15 +49,15 @@ Route::get('/login', function () {
     return view('connexion');
 })->name('login');
 
-Route::post('/connexion', [AuthControllee::class, 'login'])->name('connexion.login');
-Route::post('/login', [AuthControllee::class, 'login'])->name('login');
+Route::post('/connexion', [AuthController::class, 'login'])->name('connexion.login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
 // Inscription
-Route::get('/inscription', [AuthControllee::class, 'showInscriptionForm'])->name('inscription.form');
-Route::get('/register', [AuthControllee::class, 'showInscriptionForm'])->name('register');
+Route::get('/inscription', [AuthController::class, 'showInscriptionForm'])->name('inscription.form');
+Route::get('/register', [AuthController::class, 'showInscriptionForm'])->name('register');
 
-Route::post('/inscription', [AuthControllee::class, 'store'])->name('inscription.store');
-Route::post('/register', [AuthControllee::class, 'store'])->name('register');
+Route::post('/inscription', [AuthController::class, 'store'])->name('inscription.store');
+Route::post('/register', [AuthController::class, 'store'])->name('register.submit');
 
 // Mot de passe oublié
 Route::get('/Mot-de-passe', function () {
@@ -68,34 +68,32 @@ Route::get('/forgot-password', function () {
     return view('Mot-de-passe');
 })->name('password.request');
 
-Route::post('/Mot-de-passe', [AuthControllee::class, 'mdpOublier'])->name('mdpOublier');
-Route::post('/forgot-password', [AuthControllee::class, 'mdpOublier'])->name('password.email');
+Route::post('/Mot-de-passe', [AuthController::class, 'mdpOublier'])->name('mdpOublier');
+Route::post('/forgot-password', [AuthController::class, 'mdpOublier'])->name('password.email');
 
 // Réinitialisation de mot de passe
 Route::get('/reset-password/{token}', function () {
     return view('Mot-de-passe');
 })->name('password.reset');
 
-Route::post('/reset-password', [AuthControllee::class, 'mdpOublier'])->name('password.update');
+Route::post('/reset-password', [AuthController::class, 'mdpOublier'])->name('password.update');
 
 // Confirmation de mot de passe
 Route::get('/confirm-password', function () {
     return view('connexion');
 })->name('password.confirm');
 
-Route::post('/confirm-password', [AuthControllee::class, 'login'])->name('password.confirm');
+Route::post('/confirm-password', [AuthController::class, 'login'])->name('password.confirm.submit');
 
 // Vérification d'email
 Route::get('/verify-email', function () {
     return view('connexion');
 })->name('verification.notice');
 
-Route::get('/verify-email/{id}/{hash}', function () {
-    return redirect('/dashboard');
-})->name('verification.verify');
+Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
 
 // Déconnexion
-Route::post('/logout', [AuthControllee::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /*
 |--------------------------------------------------------------------------
@@ -104,7 +102,7 @@ Route::post('/logout', [AuthControllee::class, 'logout'])->name('logout');
 */
 
 Route::middleware(['auth'])->group(function () {
-    
+
     // Dashboards
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboardv', [DashboardController::class, 'index'])->name('dashboardv');
@@ -141,8 +139,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/commande', function () {
         return view('commande');
     })->name('commande');
-    
-    Route::post('/commande', [AuthControllee::class, 'storeCommande'])->name('commande.store');
+
+    Route::post('/commande', [AuthController::class, 'storeCommande'])->name('commande.store');
+
+    // Paramètres
+    Route::get('/settings/profile', \App\Livewire\Settings\Profile::class)->name('settings.profile');
+    Route::get('/settings/password', \App\Livewire\Settings\Password::class)->name('settings.password');
+    Route::get('/settings/appearance', \App\Livewire\Settings\Appearance::class)->name('settings.appearance');
+    Route::get('/settings/delete-user', \App\Livewire\Settings\DeleteUserForm::class)->name('settings.delete-user');
 });
 
 /*
@@ -151,7 +155,7 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'is_vendeur'])->group(function () {
+Route::middleware(['auth', 'is_vendeur_or_admin'])->group(function () {
     // Gestion des stocks
     Route::resource('stocks', StockController::class);
 });

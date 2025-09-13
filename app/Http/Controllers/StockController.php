@@ -14,7 +14,7 @@ class StockController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user->isAdmin()) {
             $stocks = Stock::with('vendeur')->paginate(15);
         } else {
@@ -43,7 +43,7 @@ class StockController extends Controller
             'quantite_minimum' => 'required|integer|min:0',
             'prix_unitaire' => 'required|numeric|min:0',
             'unite' => 'required|string|max:50',
-            'description' => 'nullable|string|max:1000'
+            'description' => 'nullable|string|max:1000',
         ]);
 
         Stock::create([
@@ -54,7 +54,7 @@ class StockController extends Controller
             'prix_unitaire' => $request->prix_unitaire,
             'unite' => $request->unite,
             'description' => $request->description,
-            'disponible' => true
+            'disponible' => true,
         ]);
 
         return redirect()->route('stocks.index')
@@ -68,6 +68,7 @@ class StockController extends Controller
     {
         $this->authorize('view', $stock);
         $stock->load('vendeur');
+
         return view('stocks.show', compact('stock'));
     }
 
@@ -77,6 +78,7 @@ class StockController extends Controller
     public function edit(Stock $stock)
     {
         $this->authorize('update', $stock);
+
         return view('stocks.edit', compact('stock'));
     }
 
@@ -86,7 +88,7 @@ class StockController extends Controller
     public function update(Request $request, Stock $stock)
     {
         $this->authorize('update', $stock);
-        
+
         $request->validate([
             'type_gaz' => 'required|string|max:255',
             'quantite_disponible' => 'required|integer|min:0',
@@ -94,7 +96,7 @@ class StockController extends Controller
             'prix_unitaire' => 'required|numeric|min:0',
             'unite' => 'required|string|max:50',
             'description' => 'nullable|string|max:1000',
-            'disponible' => 'boolean'
+            'disponible' => 'boolean',
         ]);
 
         $stock->update($request->all());
@@ -109,7 +111,7 @@ class StockController extends Controller
     public function destroy(Stock $stock)
     {
         $this->authorize('delete', $stock);
-        
+
         $stock->delete();
 
         return redirect()->route('stocks.index')

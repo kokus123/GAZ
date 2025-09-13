@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Stock;
 use App\Models\Commande;
-use App\Models\Paiement;
 use App\Models\Livraison;
+use App\Models\Paiement;
 use App\Models\Reçu;
-use App\Models\Signalement;
+use App\Models\Stock;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -92,7 +91,7 @@ class DatabaseSeeder extends Seeder
         $commande = Commande::create([
             'client_id' => $client1->id,
             'vendeur_id' => $vendeur1->id,
-            'numero_commande' => 'CMD-' . date('Ymd') . '-0001',
+            'numero_commande' => 'CMD-'.date('Ymd').'-0001',
             'nom_client' => $client1->name,
             'telephone' => '+225 07 12 34 56 78',
             'email' => $client1->email,
@@ -110,7 +109,7 @@ class DatabaseSeeder extends Seeder
         // Créer un paiement d'exemple
         $paiement = Paiement::create([
             'commande_id' => $commande->id,
-            'numero_transaction' => 'TXN-' . date('YmdHis') . '-ABC123',
+            'numero_transaction' => 'TXN-'.date('YmdHis').'-ABC123',
             'montant' => 30000,
             'methode' => 'mobile_money',
             'statut' => 'valide',
@@ -124,7 +123,7 @@ class DatabaseSeeder extends Seeder
         Livraison::create([
             'commande_id' => $commande->id,
             'vendeur_id' => $vendeur1->id,
-            'numero_livraison' => 'LIV-' . date('Ymd') . '-0001',
+            'numero_livraison' => 'LIV-'.date('Ymd').'-0001',
             'statut' => 'programmee',
             'adresse_livraison' => $commande->adresse_livraison,
             'latitude' => $commande->latitude,
@@ -138,8 +137,8 @@ class DatabaseSeeder extends Seeder
         Reçu::create([
             'commande_id' => $commande->id,
             'paiement_id' => $paiement->id,
-            'numero_reçu' => 'REC-' . date('Ymd') . '-0001',
-            'chemin_fichier' => 'receipts/rec-' . date('Ymd') . '-0001.pdf',
+            'numero_reçu' => 'REC-'.date('Ymd').'-0001',
+            'chemin_fichier' => 'receipts/rec-'.date('Ymd').'-0001.pdf',
             'date_generation' => now(),
             'telecharge' => false,
         ]);

@@ -49,15 +49,15 @@ class AuthTest extends TestCase
             'name' => 'Test Client',
             'email' => 'client@test.com',
             'password' => 'password123',
-            'role' => 'client'
+            'role' => 'client',
         ];
 
         $response = $this->post('/inscription', $userData);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('users', [
             'email' => 'client@test.com',
-            'role' => 'client'
+            'role' => 'client',
         ]);
     }
 
@@ -70,15 +70,15 @@ class AuthTest extends TestCase
             'name' => 'Test Vendeur',
             'email' => 'vendeur@test.com',
             'password' => 'password123',
-            'role' => 'vendeur'
+            'role' => 'vendeur',
         ];
 
         $response = $this->post('/inscription', $userData);
-        
+
         $response->assertRedirect();
         $this->assertDatabaseHas('users', [
             'email' => 'vendeur@test.com',
-            'role' => 'vendeur'
+            'role' => 'vendeur',
         ]);
     }
 
@@ -89,12 +89,12 @@ class AuthTest extends TestCase
     {
         $user = User::factory()->create([
             'email' => 'test@example.com',
-            'password' => bcrypt('password123')
+            'password' => bcrypt('password123'),
         ]);
 
         $response = $this->post('/connexion', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
 
         $response->assertRedirect();
@@ -107,11 +107,11 @@ class AuthTest extends TestCase
     public function test_user_can_logout()
     {
         $user = User::factory()->create();
-        
+
         $this->actingAs($user);
-        
+
         $response = $this->post('/logout');
-        
+
         $response->assertRedirect('/');
         $this->assertGuest();
     }

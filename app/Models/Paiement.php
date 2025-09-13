@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Paiement extends Model
 {
@@ -72,7 +72,7 @@ class Paiement extends Model
      */
     public function generateNumeroTransaction(): string
     {
-        return 'TXN-' . date('YmdHis') . '-' . strtoupper(substr(md5(uniqid()), 0, 8));
+        return 'TXN-'.date('YmdHis').'-'.strtoupper(substr(md5(uniqid()), 0, 8));
     }
 
     public function isValide(): bool

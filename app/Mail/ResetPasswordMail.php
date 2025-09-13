@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -14,11 +13,11 @@ class ResetPasswordMail extends Mailable
     use Queueable, SerializesModels;
 
     public $token;
-        public function __construct($token)
+
+    public function __construct($token)
     {
         $this->token = $token;
     }
-
 
     /**
      * Get the message envelope.
@@ -33,12 +32,12 @@ class ResetPasswordMail extends Mailable
     /**
      * Get the message content definition.
      */
-     public function content(): Content
+    public function content(): Content
     {
         return new Content(
             view: 'reset_password', // chemin de ta vue Blade
             with: [
-                'token' => $this->token
+                'token' => $this->token,
             ]
         );
     }

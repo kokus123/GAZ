@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Signalement extends Model
 {
@@ -86,7 +86,7 @@ class Signalement extends Model
      */
     public function generateNumeroSignalement(): string
     {
-        return 'SIG-' . date('Ymd') . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        return 'SIG-'.date('Ymd').'-'.str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
 
     public function isEnAttente(): bool

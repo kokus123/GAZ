@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Commande;
 use App\Models\Stock;
 use App\Models\User;
@@ -13,7 +12,7 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user->isAdmin()) {
             return $this->adminDashboard();
         } elseif ($user->isVendeur()) {
@@ -44,7 +43,7 @@ class DashboardController extends Controller
     private function vendeurDashboard()
     {
         $user = Auth::user();
-        
+
         $stats = [
             'mes_commandes' => Commande::where('vendeur_id', $user->id)->count(),
             'commandes_en_attente' => Commande::where('vendeur_id', $user->id)->enAttente()->count(),
@@ -64,7 +63,7 @@ class DashboardController extends Controller
     private function clientDashboard()
     {
         $user = Auth::user();
-        
+
         $stats = [
             'mes_commandes' => Commande::where('client_id', $user->id)->count(),
             'commandes_en_attente' => Commande::where('client_id', $user->id)->enAttente()->count(),

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Commande;
 use App\Models\Stock;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,12 +15,12 @@ class CommandeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Créer des utilisateurs de test
         $this->client = User::factory()->create(['role' => 'client']);
         $this->vendeur = User::factory()->create(['role' => 'vendeur']);
         $this->admin = User::factory()->create(['role' => 'admin']);
-        
+
         // Créer un stock pour le vendeur
         $this->stock = Stock::create([
             'vendeur_id' => $this->vendeur->id,
@@ -30,7 +30,7 @@ class CommandeTest extends TestCase
             'prix_unitaire' => 15000,
             'unite' => 'kg',
             'description' => 'Gaz propane de qualité',
-            'disponible' => true
+            'disponible' => true,
         ]);
     }
 
@@ -50,7 +50,7 @@ class CommandeTest extends TestCase
             'latitude' => 5.3600,
             'longitude' => -4.0083,
             'type_gaz' => 'propane',
-            'notes' => 'Livraison urgente'
+            'notes' => 'Livraison urgente',
         ];
 
         $response = $this->post('/commandes', $commandeData);
@@ -58,7 +58,7 @@ class CommandeTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('commandes', [
             'nom_client' => 'Test Client',
-            'client_id' => $this->client->id
+            'client_id' => $this->client->id,
         ]);
     }
 
@@ -82,7 +82,7 @@ class CommandeTest extends TestCase
             'adresse_livraison' => 'Cocody, Abidjan',
             'latitude' => 5.3600,
             'longitude' => -4.0083,
-            'statut' => 'en_attente'
+            'statut' => 'en_attente',
         ]);
 
         $response = $this->get('/commandes');
@@ -110,7 +110,7 @@ class CommandeTest extends TestCase
             'adresse_livraison' => 'Cocody, Abidjan',
             'latitude' => 5.3600,
             'longitude' => -4.0083,
-            'statut' => 'en_attente'
+            'statut' => 'en_attente',
         ]);
 
         $response = $this->get('/commandes');
@@ -137,7 +137,7 @@ class CommandeTest extends TestCase
             'adresse_livraison' => 'Cocody, Abidjan',
             'latitude' => 5.3600,
             'longitude' => -4.0083,
-            'statut' => 'en_attente'
+            'statut' => 'en_attente',
         ]);
 
         $response = $this->post("/commandes/{$commande->id}/confirmer");
@@ -145,7 +145,7 @@ class CommandeTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('commandes', [
             'id' => $commande->id,
-            'statut' => 'confirmee'
+            'statut' => 'confirmee',
         ]);
     }
 
@@ -168,7 +168,7 @@ class CommandeTest extends TestCase
             'adresse_livraison' => 'Cocody, Abidjan',
             'latitude' => 5.3600,
             'longitude' => -4.0083,
-            'statut' => 'en_attente'
+            'statut' => 'en_attente',
         ]);
 
         $response = $this->post("/commandes/{$commande->id}/annuler");
@@ -176,7 +176,7 @@ class CommandeTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('commandes', [
             'id' => $commande->id,
-            'statut' => 'annulee'
+            'statut' => 'annulee',
         ]);
     }
 
@@ -199,7 +199,7 @@ class CommandeTest extends TestCase
             'adresse_livraison' => 'Cocody, Abidjan',
             'latitude' => 5.3600,
             'longitude' => -4.0083,
-            'statut' => 'en_attente'
+            'statut' => 'en_attente',
         ]);
 
         $response = $this->get("/commandes/{$commande->id}");
@@ -223,7 +223,7 @@ class CommandeTest extends TestCase
             'adresse_livraison',
             'latitude',
             'longitude',
-            'type_gaz'
+            'type_gaz',
         ]);
     }
 

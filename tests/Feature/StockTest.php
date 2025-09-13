@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\Stock;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -14,7 +14,7 @@ class StockTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->vendeur = User::factory()->create(['role' => 'vendeur']);
         $this->admin = User::factory()->create(['role' => 'admin']);
         $this->client = User::factory()->create(['role' => 'client']);
@@ -33,7 +33,7 @@ class StockTest extends TestCase
             'quantite_minimum' => 10,
             'prix_unitaire' => 15000,
             'unite' => 'kg',
-            'description' => 'Gaz propane de qualité supérieure'
+            'description' => 'Gaz propane de qualité supérieure',
         ];
 
         $response = $this->post('/stocks', $stockData);
@@ -41,7 +41,7 @@ class StockTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseHas('stocks', [
             'vendeur_id' => $this->vendeur->id,
-            'type_gaz' => 'propane'
+            'type_gaz' => 'propane',
         ]);
     }
 
@@ -60,7 +60,7 @@ class StockTest extends TestCase
             'prix_unitaire' => 15000,
             'unite' => 'kg',
             'description' => 'Gaz propane',
-            'disponible' => true
+            'disponible' => true,
         ]);
 
         $response = $this->get('/stocks');
@@ -83,7 +83,7 @@ class StockTest extends TestCase
             'prix_unitaire' => 15000,
             'unite' => 'kg',
             'description' => 'Gaz propane',
-            'disponible' => true
+            'disponible' => true,
         ]);
 
         $response = $this->get('/stocks');
@@ -106,7 +106,7 @@ class StockTest extends TestCase
             'prix_unitaire' => 15000,
             'unite' => 'kg',
             'description' => 'Gaz propane',
-            'disponible' => true
+            'disponible' => true,
         ]);
 
         $updateData = [
@@ -115,7 +115,7 @@ class StockTest extends TestCase
             'quantite_minimum' => 15,
             'prix_unitaire' => 16000,
             'unite' => 'kg',
-            'description' => 'Gaz propane mis à jour'
+            'description' => 'Gaz propane mis à jour',
         ];
 
         $response = $this->put("/stocks/{$stock->id}", $updateData);
@@ -124,7 +124,7 @@ class StockTest extends TestCase
         $this->assertDatabaseHas('stocks', [
             'id' => $stock->id,
             'quantite_disponible' => 75,
-            'prix_unitaire' => 16000
+            'prix_unitaire' => 16000,
         ]);
     }
 
@@ -143,14 +143,14 @@ class StockTest extends TestCase
             'prix_unitaire' => 15000,
             'unite' => 'kg',
             'description' => 'Gaz propane',
-            'disponible' => true
+            'disponible' => true,
         ]);
 
         $response = $this->delete("/stocks/{$stock->id}");
 
         $response->assertRedirect();
         $this->assertDatabaseMissing('stocks', [
-            'id' => $stock->id
+            'id' => $stock->id,
         ]);
     }
 
@@ -179,7 +179,7 @@ class StockTest extends TestCase
             'quantite_disponible',
             'quantite_minimum',
             'prix_unitaire',
-            'unite'
+            'unite',
         ]);
     }
 
@@ -196,18 +196,18 @@ class StockTest extends TestCase
             'quantite_minimum' => 5,
             'prix_unitaire' => 12000,
             'unite' => 'kg',
-            'description' => 'Gaz butane pour usage domestique'
+            'description' => 'Gaz butane pour usage domestique',
         ];
 
         $response = $this->post('/stocks', $stockData);
 
         $response->assertRedirect('/stocks');
         $response->assertSessionHas('success', 'Stock créé avec succès !');
-        
+
         $this->assertDatabaseHas('stocks', [
             'vendeur_id' => $this->vendeur->id,
             'type_gaz' => 'butane',
-            'quantite_disponible' => 30
+            'quantite_disponible' => 30,
         ]);
     }
 

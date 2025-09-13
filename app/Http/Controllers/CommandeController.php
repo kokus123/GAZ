@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Commande;
 use App\Models\Stock;
-use App\Models\User;
 use App\Services\GeolocalisationService;
 use App\Services\PaymentService;
 use Illuminate\Http\Request;
@@ -15,6 +14,7 @@ use Illuminate\Support\Str;
 class CommandeController extends Controller
 {
     protected $geolocalisationService;
+
     protected $paymentService;
 
     public function __construct(GeolocalisationService $geolocalisationService, PaymentService $paymentService)
@@ -29,7 +29,7 @@ class CommandeController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user->isAdmin()) {
             $commandes = Commande::with(['client', 'vendeur', 'paiements'])
                 ->orderBy('created_at', 'desc')
@@ -55,6 +55,7 @@ class CommandeController extends Controller
     public function create()
     {
         $stocks = Stock::disponibles()->with('vendeur')->get();
+
         return view('commandes.create', compact('stocks'));
     }
 
@@ -86,7 +87,7 @@ class CommandeController extends Controller
                 $request->quantite
             );
 
-            if (!$vendeurProche) {
+            if (! $vendeurProche) {
                 return back()->withErrors(['error' => 'Aucun vendeur disponible avec du stock suffisant dans votre région.']);
             }
 
@@ -94,7 +95,7 @@ class CommandeController extends Controller
             $commande = Commande::create([
                 'client_id' => Auth::id(),
                 'vendeur_id' => $vendeurProche->vendeur_id,
-                'numero_commande' => 'CMD-' . date('YmdHis') . '-' . Str::random(6),
+                'numero_commande' => 'CMD-'.date('YmdHis').'-'.Str::random(6),
                 'nom_client' => $request->nom_client,
                 'telephone' => $request->telephone,
                 'email' => $request->email,
@@ -119,6 +120,7 @@ class CommandeController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withErrors(['error' => 'Erreur lors de la création de la commande.']);
         }
     }
@@ -129,10 +131,10 @@ class CommandeController extends Controller
     public function show(Commande $commande)
     {
         $commande->load(['client', 'vendeur', 'paiements', 'livraisons', 'reçus']);
-        
+
         // Vérifier les permissions
         $user = Auth::user();
-        if (!$user->isAdmin() && $commande->client_id !== $user->id && $commande->vendeur_id !== $user->id) {
+        if (! $user->isAdmin() && $commande->client_id !== $user->id && $commande->vendeur_id !== $user->id) {
             abort(403, 'Accès refusé');
         }
 
@@ -144,12 +146,12 @@ class CommandeController extends Controller
      */
     public function confirmer(Commande $commande)
     {
-        if (!Auth::user()->isVendeur() || $commande->vendeur_id !== Auth::id()) {
+        if (! Auth::user()->isVendeur() || $commande->vendeur_id !== Auth::id()) {
             abort(403, 'Accès refusé');
         }
 
         $commande->update(['statut' => 'confirmee']);
-        
+
         return back()->with('success', 'Commande confirmée avec succès !');
     }
 
@@ -159,13 +161,13 @@ class CommandeController extends Controller
     public function annuler(Commande $commande)
     {
         $user = Auth::user();
-        
+
         // Vérifier les permissions
-        if (!$user->isAdmin() && $commande->client_id !== $user->id) {
+        if (! $user->isAdmin() && $commande->client_id !== $user->id) {
             abort(403, 'Accès refusé');
         }
 
-        if (!$commande->canBeCancelled()) {
+        if (! $commande->canBeCancelled()) {
             return back()->withErrors(['error' => 'Cette commande ne peut pas être annulée.']);
         }
 
@@ -179,7 +181,7 @@ class CommandeController extends Controller
                 $stock = Stock::where('vendeur_id', $commande->vendeur_id)
                     ->where('type_gaz', $commande->type_gaz ?? 'propane')
                     ->first();
-                
+
                 if ($stock) {
                     $stock->incrementerStock($commande->quantite);
                 }
@@ -191,6 +193,7 @@ class CommandeController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return back()->withErrors(['error' => 'Erreur lors de l\'annulation de la commande.']);
         }
     }
@@ -218,10 +221,10 @@ class CommandeController extends Controller
                 $stock->vendeur->latitude ?? 0,
                 $stock->vendeur->longitude ?? 0
             );
-            
+
             return [
                 'stock' => $stock,
-                'distance' => $distance
+                'distance' => $distance,
             ];
         });
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\GeolocalisationService;
+use Illuminate\Http\Request;
 
 class GeolocalisationController extends Controller
 {
@@ -20,20 +20,20 @@ class GeolocalisationController extends Controller
     public function obtenirCoordonnees(Request $request)
     {
         $request->validate([
-            'adresse' => 'required|string|max:500'
+            'adresse' => 'required|string|max:500',
         ]);
 
         try {
             $coordonnees = $this->geolocalisationService->obtenirCoordonnees($request->adresse);
-            
+
             return response()->json([
                 'success' => true,
-                'coordonnees' => $coordonnees
+                'coordonnees' => $coordonnees,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Erreur lors de l\'obtention des coordonnées'
+                'message' => 'Erreur lors de l\'obtention des coordonnées',
             ], 500);
         }
     }
@@ -44,14 +44,14 @@ class GeolocalisationController extends Controller
     public function validerAdresse(Request $request)
     {
         $request->validate([
-            'adresse' => 'required|string|max:500'
+            'adresse' => 'required|string|max:500',
         ]);
 
         $isValid = $this->geolocalisationService->validerAdresse($request->adresse);
-        
+
         return response()->json([
             'success' => true,
-            'valide' => $isValid
+            'valide' => $isValid,
         ]);
     }
 
@@ -64,7 +64,7 @@ class GeolocalisationController extends Controller
             'lat1' => 'required|numeric',
             'lon1' => 'required|numeric',
             'lat2' => 'required|numeric',
-            'lon2' => 'required|numeric'
+            'lon2' => 'required|numeric',
         ]);
 
         $distance = $this->geolocalisationService->calculerDistance(
@@ -77,7 +77,7 @@ class GeolocalisationController extends Controller
         return response()->json([
             'success' => true,
             'distance' => $distance,
-            'temps_estime' => $this->geolocalisationService->calculerTempsLivraison($distance)
+            'temps_estime' => $this->geolocalisationService->calculerTempsLivraison($distance),
         ]);
     }
 }

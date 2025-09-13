@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Reçu;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ReçuController extends Controller
 {
@@ -14,15 +13,15 @@ class ReçuController extends Controller
     public function telecharger(Reçu $reçu)
     {
         $this->authorize('view', $reçu);
-        
-        if (!$reçu->existe()) {
+
+        if (! $reçu->existe()) {
             return back()->withErrors(['error' => 'Le fichier reçu n\'existe pas.']);
         }
 
         // Marquer comme téléchargé
         $reçu->marquerTelecharge();
 
-        return response()->download($reçu->chemin_complet, $reçu->numero_reçu . '.pdf');
+        return response()->download($reçu->chemin_complet, $reçu->numero_reçu.'.pdf');
     }
 
     /**
@@ -32,6 +31,7 @@ class ReçuController extends Controller
     {
         $this->authorize('view', $reçu);
         $reçu->load(['commande.client', 'paiement']);
+
         return view('reçus.show', compact('reçu'));
     }
 
@@ -42,14 +42,14 @@ class ReçuController extends Controller
     {
         $request->validate([
             'commande_id' => 'required|exists:commandes,id',
-            'paiement_id' => 'required|exists:paiements,id'
+            'paiement_id' => 'required|exists:paiements,id',
         ]);
 
         $commande = \App\Models\Commande::with(['client', 'vendeur', 'paiements'])->findOrFail($request->commande_id);
         $paiement = \App\Models\Paiement::findOrFail($request->paiement_id);
 
         // Vérifier que le paiement est valide
-        if (!$paiement->isValide()) {
+        if (! $paiement->isValide()) {
             return back()->withErrors(['error' => 'Le paiement doit être validé pour générer un reçu.']);
         }
 
@@ -57,9 +57,9 @@ class ReçuController extends Controller
         $reçu = Reçu::create([
             'commande_id' => $commande->id,
             'paiement_id' => $paiement->id,
-            'numero_reçu' => 'REC-' . date('Ymd') . '-' . str_pad(Reçu::count() + 1, 4, '0', STR_PAD_LEFT),
-            'chemin_fichier' => 'receipts/rec-' . date('Ymd') . '-' . str_pad(Reçu::count() + 1, 4, '0', STR_PAD_LEFT) . '.pdf',
-            'date_generation' => now()
+            'numero_reçu' => 'REC-'.date('Ymd').'-'.str_pad(Reçu::count() + 1, 4, '0', STR_PAD_LEFT),
+            'chemin_fichier' => 'receipts/rec-'.date('Ymd').'-'.str_pad(Reçu::count() + 1, 4, '0', STR_PAD_LEFT).'.pdf',
+            'date_generation' => now(),
         ]);
 
         // Générer le PDF (simulation)
@@ -76,7 +76,7 @@ class ReçuController extends Controller
     {
         // Créer le dossier s'il n'existe pas
         $directory = storage_path('app/receipts');
-        if (!file_exists($directory)) {
+        if (! file_exists($directory)) {
             mkdir($directory, 0755, true);
         }
 
@@ -117,19 +117,19 @@ class ReçuController extends Controller
                     <th>Total</th>
                 </tr>
                 <tr>
-                    <td>Gaz {$commande->type_gaz ?? 'Propane'}</td>
+                    <td>Gaz ".($commande->type_gaz ?? 'Propane')."</td>
                     <td>{$commande->quantite} kg</td>
-                    <td>" . number_format($commande->prix_unitaire, 0, ',', ' ') . " FCFA</td>
-                    <td>" . number_format($commande->prix_total, 0, ',', ' ') . " FCFA</td>
+                    <td>".number_format($commande->prix_unitaire, 0, ',', ' ').' FCFA</td>
+                    <td>'.number_format($commande->prix_total, 0, ',', ' ')." FCFA</td>
                 </tr>
             </table>
             
             <div class='total'>
-                <p>Total: " . number_format($commande->prix_total, 0, ',', ' ') . " FCFA</p>
+                <p>Total: ".number_format($commande->prix_total, 0, ',', ' ')." FCFA</p>
             </div>
             
             <div class='info'>
-                <p><strong>Méthode de paiement:</strong> " . ucfirst($paiement->methode) . "</p>
+                <p><strong>Méthode de paiement:</strong> ".ucfirst($paiement->methode)."</p>
                 <p><strong>Transaction:</strong> {$paiement->numero_transaction}</p>
                 <p><strong>Adresse de livraison:</strong> {$commande->adresse_livraison}</p>
             </div>

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Livraison extends Model
 {
@@ -72,7 +72,7 @@ class Livraison extends Model
      */
     public function generateNumeroLivraison(): string
     {
-        return 'LIV-' . date('Ymd') . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        return 'LIV-'.date('Ymd').'-'.str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
 
     public function isProgrammee(): bool

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Signalement;
-use App\Models\Commande;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +14,7 @@ class SignalementController extends Controller
     public function index()
     {
         $user = Auth::user();
-        
+
         if ($user->isAdmin()) {
             $signalements = Signalement::with(['client', 'commande'])->paginate(15);
         } else {
@@ -47,7 +46,7 @@ class SignalementController extends Controller
             'adresse_incident' => 'required|string|max:500',
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
-            'commande_id' => 'nullable|exists:commandes,id'
+            'commande_id' => 'nullable|exists:commandes,id',
         ]);
 
         $signalement = Signalement::create([
@@ -59,8 +58,8 @@ class SignalementController extends Controller
             'adresse_incident' => $request->adresse_incident,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'numero_signalement' => 'SIG-' . date('Ymd') . '-' . str_pad(Signalement::count() + 1, 4, '0', STR_PAD_LEFT),
-            'statut' => 'en_attente'
+            'numero_signalement' => 'SIG-'.date('Ymd').'-'.str_pad(Signalement::count() + 1, 4, '0', STR_PAD_LEFT),
+            'statut' => 'en_attente',
         ]);
 
         return redirect()->route('signalements.show', $signalement)
@@ -74,6 +73,7 @@ class SignalementController extends Controller
     {
         $this->authorize('view', $signalement);
         $signalement->load(['client', 'commande']);
+
         return view('signalements.show', compact('signalement'));
     }
 
@@ -85,7 +85,7 @@ class SignalementController extends Controller
         $request->validate([
             'commande_id' => 'nullable|exists:commandes,id',
             'description' => 'required|string|max:1000',
-            'adresse_incident' => 'required|string|max:500'
+            'adresse_incident' => 'required|string|max:500',
         ]);
 
         $signalement = Signalement::create([
@@ -95,8 +95,8 @@ class SignalementController extends Controller
             'service' => 'police',
             'description' => $request->description,
             'adresse_incident' => $request->adresse_incident,
-            'numero_signalement' => 'SIG-' . date('Ymd') . '-' . str_pad(Signalement::count() + 1, 4, '0', STR_PAD_LEFT),
-            'statut' => 'en_attente'
+            'numero_signalement' => 'SIG-'.date('Ymd').'-'.str_pad(Signalement::count() + 1, 4, '0', STR_PAD_LEFT),
+            'statut' => 'en_attente',
         ]);
 
         return back()->with('success', 'Signalement envoyé à la police !');
@@ -111,7 +111,7 @@ class SignalementController extends Controller
             'description' => 'required|string|max:1000',
             'adresse_incident' => 'required|string|max:500',
             'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric'
+            'longitude' => 'nullable|numeric',
         ]);
 
         $signalement = Signalement::create([
@@ -122,8 +122,8 @@ class SignalementController extends Controller
             'adresse_incident' => $request->adresse_incident,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
-            'numero_signalement' => 'SIG-' . date('Ymd') . '-' . str_pad(Signalement::count() + 1, 4, '0', STR_PAD_LEFT),
-            'statut' => 'en_attente'
+            'numero_signalement' => 'SIG-'.date('Ymd').'-'.str_pad(Signalement::count() + 1, 4, '0', STR_PAD_LEFT),
+            'statut' => 'en_attente',
         ]);
 
         return back()->with('success', 'Signalement envoyé aux pompiers !');
@@ -135,9 +135,9 @@ class SignalementController extends Controller
     public function traiter(Signalement $signalement)
     {
         $this->authorize('update', $signalement);
-        
+
         $signalement->traiter();
-        
+
         return back()->with('success', 'Signalement traité avec succès !');
     }
 
@@ -147,9 +147,9 @@ class SignalementController extends Controller
     public function resoudre(Signalement $signalement)
     {
         $this->authorize('update', $signalement);
-        
+
         $signalement->resoudre();
-        
+
         return back()->with('success', 'Signalement résolu avec succès !');
     }
 }

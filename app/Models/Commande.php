@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Commande extends Model
 {
@@ -103,7 +103,7 @@ class Commande extends Model
      */
     public function generateNumeroCommande(): string
     {
-        return 'CMD-' . date('Ymd') . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        return 'CMD-'.date('Ymd').'-'.str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
 
     public function canBeCancelled(): bool

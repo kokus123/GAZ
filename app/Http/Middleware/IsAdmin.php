@@ -17,4 +17,3 @@ class IsAdmin
         abort(403, 'Accès refusé'); // Retourne une erreur 403 si pas admin
     }
 }
-

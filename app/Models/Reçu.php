@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Reçu extends Model
 {
@@ -43,7 +43,7 @@ class Reçu extends Model
      */
     public function generateNumeroReçu(): string
     {
-        return 'REC-' . date('Ymd') . '-' . str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        return 'REC-'.date('Ymd').'-'.str_pad($this->id, 4, '0', STR_PAD_LEFT);
     }
 
     public function marquerTelecharge(): void
@@ -56,7 +56,7 @@ class Reçu extends Model
 
     public function getCheminCompletAttribute(): string
     {
-        return storage_path('app/' . $this->chemin_fichier);
+        return storage_path('app/'.$this->chemin_fichier);
     }
 
     public function existe(): bool

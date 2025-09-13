@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -12,6 +12,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
+
         return view('dashboardv', compact('users'));
     }
 
@@ -22,14 +23,14 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
-            'role' => 'required'
+            'role' => 'required',
         ]);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role
+            'role' => $request->role,
         ]);
 
         return back()->with('success', 'Utilisateur ajouté avec succès');
@@ -40,6 +41,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update($request->except(['_token', '_method']));
+
         return back()->with('success', 'Utilisateur modifié');
     }
 
@@ -47,6 +49,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         User::destroy($id);
+
         return back()->with('success', 'Utilisateur supprimé');
     }
 }
