@@ -169,7 +169,7 @@ Route::middleware(['auth', 'is_vendeur_or_admin'])->group(function () {
 Route::middleware(['auth', 'is_admin'])->prefix('admin')->group(function () {
     // Gestion des utilisateurs
     Route::get('/users', [AdminController::class, 'index'])->name('Admin.users.index');
-    Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('Admin.users.edit');
-    Route::put('/users/{id}', [AdminController::class, 'update'])->name('Admin.users.update');
-    Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('Admin.users.destroy');
+    Route::get('/users/{id}/edit', [AdminController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [AdminController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
 });

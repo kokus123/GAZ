@@ -78,12 +78,12 @@
         <!-- Comptes de test -->
         <div class="mt-8 bg-blue-50 border border-blue-200 rounded-md p-4">
             <h3 class="text-sm font-medium text-blue-800 mb-2">Comptes de test :</h3>
-            <div class="text-xs text-blue-700 space-y-1">
+            <!-- <!-- <div class="text-xs text-blue-700 space-y-1">
                 <p><strong>Admin:</strong> admin@gazapp.com / password</p>
                 <p><strong>Vendeur:</strong> vendeur1@gazapp.com / password</p>
                 <p><strong>Client:</strong> client@gazapp.com / password</p>
-            </div>
-        </div>
+            </div> 
+        </div>  -->
     </div>
 </div>
 @endsection

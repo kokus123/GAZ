@@ -7,10 +7,10 @@
 <div class="bg-gradient-to-r from-primary to-secondary text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div class="text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 text-green-500 font-extrabold">
                 Commandez votre gaz en ligne
             </h1>
-            <p class="text-xl md:text-2xl mb-8 text-blue-100">
+            <p class="text-xl md:text-2xl mb-8 text-blue-100 text-green-500 font-semibold">
                 Livraison rapide, paiement sécurisé, service de qualité
             </p>
             <div class="space-x-4">
@@ -21,12 +21,12 @@
                     </a>
                 @else
                     <a href="{{ route('inscription.form') }}" 
-                       class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300">
+                       class="bg-white text-black border-2 border-green-500 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-400 transition duration-300">
                         Commencer
                     </a>
                 @endauth
                 <a href="{{ route('visite') }}" 
-                   class="border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-primary transition duration-300">
+                   class="bg-white text-black border-2 border-green-500 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-green-400 transition duration-300">
                     En savoir plus
                 </a>
             </div>
@@ -38,7 +38,7 @@
 <div class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Pourquoi choisir GazApp ?</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Pourquoi choisir GazExpress ?</h2>
             <p class="text-lg text-gray-600">Une solution complète pour vos besoins en gaz domestique</p>
         </div>
 
@@ -115,8 +115,8 @@
 <!-- CTA Section -->
 <div class="py-16 bg-primary text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-3xl font-bold mb-4">Prêt à commander ?</h2>
-        <p class="text-xl mb-8 text-blue-100">Rejoignez des milliers de clients satisfaits</p>
+        <h2 class="text-3xl font-bold mb-4 text-green-300">Prêt à commander ?</h2>
+        <p class="text-xl mb-8 text-blue-500">Rejoignez des milliers de clients satisfaits</p>
         @auth
             <a href="{{ route('commandes.create') }}" 
                class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300">
@@ -124,7 +124,7 @@
             </a>
         @else
             <a href="{{ route('inscription.form') }}" 
-               class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition duration-300">
+               class="bg-white text-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-500 transition duration-300">
                 S'inscrire maintenant
             </a>
         @endauth

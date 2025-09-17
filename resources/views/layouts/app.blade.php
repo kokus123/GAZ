@@ -28,8 +28,8 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <a href="{{ route('welcome') }}" class="flex-shrink-0 flex items-center">
-                        <img class="h-8 w-8" src="{{ asset('sctm.png') }}" alt="Logo">
-                        <span class="ml-2 text-xl font-bold text-primary">GazApp</span>
+                        <img class="h-8 w-8" src="{{ asset('logo.png') }}" alt="Logo">
+                        <span class="ml-2 text-xl font-bold text-primary">GazExpress</span>
                     </a>
                 </div>
 

@@ -10,7 +10,7 @@ GazApp est une application web monolithique développée avec Laravel 12, Blade 
 
 -   **Page de visite publique** : Présentation de l'application et possibilité de commander
 -   **Formulaire de commande** : Champs standards + géolocalisation obligatoire
--   **Paiement en ligne** : Mobile Money, carte bancaire ou espèces
+-   **Paiement en ligne** : Mobile Money, carte bancaire ou espèces apres la reception
 -   **Téléchargement de reçu** : Reçus numériques après paiement validé
 -   **Redirection dynamique** : Attribution automatique au vendeur le plus proche
 -   **Services de sécurité** : Signalement direct à la police et aux pompiers
