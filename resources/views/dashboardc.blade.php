@@ -9,7 +9,6 @@
         <h1 class="text-3xl font-bold text-gray-900">Mon Dashboard</h1>
         <p class="mt-2 text-gray-600">Gérez vos commandes de gaz</p>
     </div>
-
     <!-- Statistiques -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white overflow-hidden shadow rounded-lg">
