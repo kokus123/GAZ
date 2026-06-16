@@ -47,13 +47,9 @@
     100% { background-position: 0%   50%; }
   }
 
-  /* Image hero — cadre flottant */
+  /* Image hero — statique, pas d'animation */
   .hero-img-wrap {
-    animation: heroFloat 4s ease-in-out infinite;
-  }
-  @keyframes heroFloat {
-    0%, 100% { transform: translateY(0)   rotate(-1deg); }
-    50%       { transform: translateY(-10px) rotate(1deg); }
+    /* aucune animation */
   }
 
   /* Bouton primaire */
@@ -204,108 +200,137 @@
 </nav>
 
 {{-- ══════════════════════════════════════════════════════════
-     HERO
+     HERO — Split-screen plein bord
      ══════════════════════════════════════════════════════════ --}}
-<section class="hero-gradient text-white overflow-hidden relative">
+<section class="relative overflow-hidden" style="min-height: 580px; display: flex;">
 
-  {{-- Motif décoratif --}}
-  <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-    <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white opacity-5"></div>
-    <div class="absolute bottom-0 -left-16 w-72 h-72 rounded-full bg-white opacity-5"></div>
-  </div>
+  {{-- ── CÔTÉ GAUCHE : texte sur fond vert ── --}}
+  <div class="hero-gradient relative z-10 flex items-center"
+       style="flex: 0 0 52%; padding: 72px 5% 72px 6%;">
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 relative z-10">
-    <div class="flex flex-col lg:flex-row items-center gap-12">
+    {{-- Motifs décoratifs discrets --}}
+    <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      <div class="absolute -top-20 -left-20 w-72 h-72 rounded-full"
+           style="background: rgba(255,255,255,.04);"></div>
+      <div class="absolute bottom-0 right-0 w-48 h-48 rounded-full"
+           style="background: rgba(255,255,255,.04);"></div>
+    </div>
 
-      {{-- Texte hero --}}
-      <div class="flex-1 text-center lg:text-left" data-aos="fade-right" data-aos-duration="700">
-        <span class="inline-block text-green-200 text-sm font-semibold tracking-widest uppercase mb-4
-                     bg-white/10 border border-white/20 px-4 py-1.5 rounded-full">
-          Livraison de gaz domestique · Yaoundé &amp; environs
-        </span>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6 tracking-tight">
-          Votre gaz livré<br>
-          <span class="text-green-300">en moins de 24h.</span>
-        </h1>
-        <p class="text-lg lg:text-xl text-green-100 leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0">
-          Commandez en ligne depuis chez vous. Nous trouvons le vendeur le plus proche,
-          vous payez en toute sécurité via Mobile Money ou carte bancaire.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-          @auth
-            <a href="{{ route('commandes.create') }}"
-               class="bg-white font-bold px-8 py-3.5 rounded-xl text-base inline-block text-center
-                      hover:scale-105 transition-transform shadow-lg"
-               style="color:#166534;">
-              Nouvelle commande
-            </a>
-          @else
-            <a href="{{ route('inscription.form') }}"
-               class="bg-white font-bold px-8 py-3.5 rounded-xl text-base inline-block text-center
-                      hover:scale-105 transition-transform shadow-lg"
-               style="color:#166534;">
-              Commencer gratuitement
-            </a>
-          @endauth
-          <a href="{{ route('visite') }}"
-             class="btn-outline px-8 py-3.5 rounded-xl text-base font-semibold inline-block text-center">
-            Découvrir le service
+    <div data-aos="fade-right" data-aos-duration="650" class="relative">
+
+      {{-- Badge label --}}
+      <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase mb-5
+                   bg-white/10 border border-white/20 text-green-200 px-4 py-2 rounded-full">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/>
+        </svg>
+        Yaoundé &amp; environs
+      </span>
+
+      {{-- Titre --}}
+      <h1 class="font-extrabold text-white leading-tight tracking-tight mb-5"
+          style="font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: 1.1;">
+        Votre gaz livré<br>
+        <span style="color:#86efac;">en moins de 24h.</span>
+      </h1>
+
+      {{-- Sous-titre --}}
+      <p class="text-green-100 leading-relaxed mb-8"
+         style="font-size:1.05rem; max-width: 420px;">
+        Commandez depuis chez vous. Nous trouvons le vendeur le plus proche
+        et vous payez via Mobile Money ou carte bancaire.
+      </p>
+
+      {{-- CTAs --}}
+      <div class="flex flex-wrap gap-3">
+        @auth
+          <a href="{{ route('commandes.create') }}"
+             class="inline-block bg-white font-bold px-7 py-3.5 rounded-xl text-sm shadow-lg
+                    hover:shadow-xl hover:scale-105 transition-all duration-200"
+             style="color:#166534;">
+            Nouvelle commande →
           </a>
-        </div>
+        @else
+          <a href="{{ route('inscription.form') }}"
+             class="inline-block bg-white font-bold px-7 py-3.5 rounded-xl text-sm shadow-lg
+                    hover:shadow-xl hover:scale-105 transition-all duration-200"
+             style="color:#166534;">
+            Commencer gratuitement →
+          </a>
+        @endauth
+        <a href="{{ route('visite') }}"
+           class="inline-block border border-white/50 text-white font-semibold px-7 py-3.5 rounded-xl text-sm
+                  hover:bg-white/10 transition-all duration-200">
+          Découvrir le service
+        </a>
       </div>
 
-      {{-- Image thématique hero --}}
-      <div class="flex-shrink-0" data-aos="fade-left" data-aos-duration="800" data-aos-delay="150">
-        <div class="hero-img-wrap relative w-64 h-64 lg:w-80 lg:h-80 mx-auto">
-          {{-- Cercle décoratif --}}
-          <div class="absolute inset-0 rounded-full opacity-20"
-               style="background: radial-gradient(circle, #86efac 0%, transparent 70%);"></div>
-          {{-- Image principale --}}
-          <img
-            src="https://www.cre.fr/fileadmin/_processed_/4/0/csm_actu_gaz10_ebeed42000.webp"
-            alt="Livraison rapide de gaz domestique à Yaoundé"
-            class="w-full h-full object-cover rounded-3xl shadow-2xl ring-4 ring-white/20"
-            loading="eager"
-            onerror="this.src='https://images.unsplash.com/photo-1519003300449-424ad0405076?w=640&q=80'"
-          >
-          {{-- Badge livraison --}}
-          <div class="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-xl px-4 py-3 flex items-center gap-2">
-            <div class="w-9 h-9 rounded-full flex items-center justify-center"
-                 style="background: linear-gradient(135deg,#16A34A,#059669);">
-              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125
-                         1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3
-                         0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193
-                         2.256 2.256 0 0 0-1.586-.948l-1.524-.32a48.5 48.5 0 0 0-5.545-.694A2.25
-                         2.25 0 0 0 7.5 9.648v1.402a2.25 2.25 0 0 0 1.524 2.132l.167.063"/>
+      {{-- Proof bar --}}
+      <div class="flex items-center gap-5 mt-8 pt-6" style="border-top: 1px solid rgba(255,255,255,.15);">
+        <div class="flex items-center gap-1.5">
+          <div class="flex gap-0.5">
+            @for ($i = 0; $i < 5; $i++)
+              <svg class="w-4 h-4" style="color:#FCD34D;" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
               </svg>
-            </div>
-            <div>
-              <p class="text-xs font-bold text-gray-900">Livraison express</p>
-              <p class="text-xs font-semibold" style="color:#16A34A;">En moins de 24h</p>
-            </div>
+            @endfor
           </div>
-          {{-- Badge étoiles --}}
-          <div class="absolute -top-4 -left-4 bg-white rounded-2xl shadow-xl px-3 py-2 flex items-center gap-1.5">
-            <div class="flex gap-0.5">
-              @for ($i = 0; $i < 5; $i++)
-                <svg class="w-3 h-3" style="color:#F59E0B;" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462
-                           c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292
-                           c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034
-                           c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98
-                           8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-              @endfor
-            </div>
-            <p class="text-xs font-bold text-gray-800">98 % satisfaits</p>
-          </div>
+          <span class="text-sm font-semibold text-white">98 % satisfaits</span>
+        </div>
+        <div style="width:1px; height:20px; background:rgba(255,255,255,.2);"></div>
+        <div class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-green-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+          </svg>
+          <span class="text-sm font-semibold text-white">+5 000 clients</span>
         </div>
       </div>
 
     </div>
   </div>
+
+  {{-- ── CÔTÉ DROIT : image plein bord ── --}}
+  <div class="relative" style="flex: 0 0 48%;" data-aos="fade-left" data-aos-duration="700" data-aos-delay="100">
+
+    {{-- Image plein bord --}}
+    <img
+      src="{{ asset('images/gaz-flamme.png') }}"
+      alt="Flamme de gaz — GazApp"
+      loading="eager"
+      onerror="this.src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYqhasDLoAuwHc2qFCU60N5LxCm9Bwtn9MTm77ng3f3Q&s=10'"
+      style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center;"
+    >
+
+    {{-- Overlay dégradé gauche pour fondu avec le texte --}}
+    <div style="position:absolute; inset:0;
+                background: linear-gradient(to right, #15803D 0%, transparent 30%);
+                pointer-events:none;" aria-hidden="true"></div>
+
+    {{-- Badge livraison express — bas gauche --}}
+    <div style="position:absolute; bottom:28px; left:28px; z-index:10;"
+         data-aos="fade-up" data-aos-delay="350" data-aos-duration="500">
+      <div class="bg-white rounded-2xl shadow-2xl px-4 py-3 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+             style="background:#16A34A;">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125
+                     1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3
+                     0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193
+                     2.256 2.256 0 0 0-1.586-.948l-1.524-.32a48.5 48.5 0 0 0-5.545-.694A2.25
+                     2.25 0 0 0 7.5 9.648v1.402a2.25 2.25 0 0 0 1.524 2.132l.167.063"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-xs font-extrabold text-gray-900 leading-tight">Livraison express</p>
+          <p class="text-xs font-semibold" style="color:#16A34A;">En moins de 24h</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
 </section>
 
 {{-- ══════════════════════════════════════════════════════════
