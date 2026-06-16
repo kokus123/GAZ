@@ -94,6 +94,7 @@ Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 've
 
 // Déconnexion
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/chatbot', [App\Http\Controllers\ChatbotController::class, 'repondre'])->name('chatbot.repondre');
 
 /*
 |--------------------------------------------------------------------------
