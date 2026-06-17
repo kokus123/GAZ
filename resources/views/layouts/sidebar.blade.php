@@ -181,6 +181,12 @@
         /* ── Flash messages ── */
         .flash-success { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
         .flash-error   { background:#fef2f2; border:1px solid #fecaca; color:#991b1b; }
+
+        /* ── Modal déconnexion ── */
+        @keyframes modalIn {
+            from { opacity:0; transform:scale(.92) translateY(8px); }
+            to   { opacity:1; transform:scale(1)  translateY(0); }
+        }
     </style>
 </head>
 <body class="bg-gray-50" style="font-family:'Inter',sans-serif;">
@@ -378,14 +384,19 @@
             </svg>
             Paramètres
         </a>
-        <form method="POST" action="{{ route('logout') }}">
+
+        {{-- Bouton déconnexion → ouvre le modal --}}
+        <button type="button" onclick="openLogoutModal()"
+                class="nav-item w-full text-left" style="border:none; background:none;">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="color:#dc2626;">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+            </svg>
+            <span style="color:#dc2626; font-weight:600;">Déconnexion</span>
+        </button>
+
+        {{-- Formulaire caché pour la soumission réelle --}}
+        <form id="logout-form" method="POST" action="{{ route('logout') }}" style="display:none;">
             @csrf
-            <button type="submit" class="nav-item w-full text-left" style="border:none;background:none;">
-                <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" style="color:#dc2626;">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
-                </svg>
-                <span style="color:#dc2626; font-weight:600;">Déconnexion</span>
-            </button>
         </form>
     </div>
     @endauth
@@ -396,6 +407,66 @@
      OVERLAY MOBILE
      ══════════════════════════════════════════════════════════ --}}
 <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+{{-- ══════════════════════════════════════════════════════════
+     MODAL DE DÉCONNEXION
+     ══════════════════════════════════════════════════════════ --}}
+<div id="logout-modal"
+     style="display:none; position:fixed; inset:0; z-index:9999;
+            background:rgba(0,0,0,.45); backdrop-filter:blur(4px);
+            align-items:center; justify-content:center;">
+
+    <div style="background:#fff; border-radius:20px; padding:32px 28px 24px;
+                width:100%; max-width:400px; margin:16px;
+                box-shadow:0 24px 64px rgba(0,0,0,.18);
+                animation: modalIn .22s cubic-bezier(.34,1.56,.64,1);">
+
+        {{-- Icône --}}
+        <div style="width:56px; height:56px; border-radius:16px;
+                    background:#fef2f2; display:flex; align-items:center;
+                    justify-content:center; margin-bottom:20px;">
+            <svg style="width:26px; height:26px; color:#dc2626;" fill="none"
+                 viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/>
+            </svg>
+        </div>
+
+        {{-- Titre --}}
+        <h2 style="font-size:18px; font-weight:700; color:#111827; margin:0 0 8px;">
+            Confirmer la déconnexion
+        </h2>
+
+        {{-- Description --}}
+        <p style="font-size:14px; color:#6b7280; margin:0 0 28px; line-height:1.6;">
+            Vous êtes sur le point de quitter votre session.<br>
+            Souhaitez-vous vraiment vous déconnecter ?
+        </p>
+
+        {{-- Boutons --}}
+        <div style="display:flex; gap:12px;">
+            <button onclick="closeLogoutModal()"
+                    style="flex:1; padding:11px 0; border-radius:12px;
+                           border:1.5px solid #e5e7eb; background:#fff;
+                           color:#374151; font-size:14px; font-weight:600;
+                           cursor:pointer; transition:background .15s;"
+                    onmouseover="this.style.background='#f9fafb'"
+                    onmouseout="this.style.background='#fff'">
+                Annuler
+            </button>
+            <button onclick="document.getElementById('logout-form').submit()"
+                    style="flex:1; padding:11px 0; border-radius:12px;
+                           border:none; background:#dc2626; color:#fff;
+                           font-size:14px; font-weight:600;
+                           cursor:pointer; transition:background .15s;"
+                    onmouseover="this.style.background='#b91c1c'"
+                    onmouseout="this.style.background='#dc2626'">
+                Se déconnecter
+            </button>
+        </div>
+
+    </div>
+</div>
 
 {{-- ══════════════════════════════════════════════════════════
      CONTENU PRINCIPAL
@@ -457,13 +528,17 @@
     {{-- Flash messages --}}
     @if(session('success'))
         <div class="flash-success mx-6 mt-4 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/></svg>
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+            </svg>
             {{ session('success') }}
         </div>
     @endif
     @if(session('error'))
         <div class="flash-error mx-6 mt-4 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2">
-            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>
+            </svg>
             {{ session('error') }}
         </div>
     @endif
@@ -482,10 +557,11 @@
 
 </div>
 
-
-
-{{-- Sidebar JS --}}
+{{-- ══════════════════════════════════════════════════════════
+     SCRIPTS
+     ══════════════════════════════════════════════════════════ --}}
 <script>
+/* ── Sidebar ── */
 let sidebarOpen = true;
 
 function toggleSidebar() {
@@ -494,11 +570,9 @@ function toggleSidebar() {
     const overlay = document.getElementById('sidebar-overlay');
 
     if (window.innerWidth <= 768) {
-        // Mobile : slide in/out
         sidebar.classList.toggle('mobile-open');
         overlay.classList.toggle('active');
     } else {
-        // Desktop : collapse/expand
         sidebarOpen = !sidebarOpen;
         if (sidebarOpen) {
             sidebar.classList.remove('sidebar-hidden');
@@ -515,7 +589,6 @@ function closeSidebar() {
     document.getElementById('sidebar-overlay').classList.remove('active');
 }
 
-// Fermer sidebar mobile si resize vers desktop
 window.addEventListener('resize', () => {
     if (window.innerWidth > 768) {
         closeSidebar();
@@ -524,6 +597,29 @@ window.addEventListener('resize', () => {
             document.getElementById('main-content').classList.remove('full-width');
         }
     }
+});
+
+/* ── Modal déconnexion ── */
+function openLogoutModal() {
+    const modal = document.getElementById('logout-modal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLogoutModal() {
+    const modal = document.getElementById('logout-modal');
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// Fermer en cliquant sur le fond
+document.getElementById('logout-modal').addEventListener('click', function (e) {
+    if (e.target === this) closeLogoutModal();
+});
+
+// Fermer avec la touche Échap
+document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeLogoutModal();
 });
 </script>
 
