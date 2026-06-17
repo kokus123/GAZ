@@ -29,6 +29,9 @@ Route::get('/', function () {
 Route::get('/welcome', function () {
     return view('welcome');
 })->name('welcome');
+Route::get('/visite', function () {
+    return view('visite');
+})->name('visite');
 
 
 
