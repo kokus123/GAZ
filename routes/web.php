@@ -30,9 +30,7 @@ Route::get('/welcome', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::get('/visite', function () {
-    return view('visite');
-})->name('visite');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -103,6 +101,11 @@ Route::post('/chatbot', [App\Http\Controllers\ChatbotController::class, 'repondr
 */
 
 Route::middleware(['auth'])->group(function () {
+
+    Route::get('/agent-ia', function () {
+        return view('agentia');
+    })->name('agent-ia');
+
 
     // Dashboards
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
