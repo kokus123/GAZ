@@ -101,8 +101,9 @@
                             onfocus="this.style.borderColor='#16A34A'; this.style.boxShadow='0 0 0 3px rgba(22,163,74,.12)';"
                             onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
                         <option value="">Choisir</option>
-                        <option value="propane" {{ old('type_gaz') == 'propane' ? 'selected' : '' }}>🔵 Propane</option>
-                        <option value="butane" {{ old('type_gaz') == 'butane' ? 'selected' : '' }}>🟠 Butane</option>
+                        <option value="propane" {{ old('type_gaz') == 'propane' ? 'selected' : '' }}>Bouteille de 6 kg</option>
+                        <option value="butane" {{ old('type_gaz') == 'butane' ? 'selected' : '' }}>Bouteille de 12,5 kg</option>
+                        <option value="butane" {{ old('type_gaz') == 'butane' ? 'selected' : '' }}>Bouteille de 35 kg</option>
                     </select>
                 </div>
                 <div>
