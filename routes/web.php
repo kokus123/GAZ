@@ -129,6 +129,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('signalements', SignalementController::class);
     Route::post('/signalements/police', [SignalementController::class, 'signalerPolice'])->name('signalements.police');
     Route::post('/signalements/pompiers', [SignalementController::class, 'signalerPompiers'])->name('signalements.pompiers');
+    // Dans web.php, à l’intérieur du groupe auth
+    Route::get('/signalements/creer/police', [SignalementController::class, 'createPolice'])->name('signalements.create.police');
+Route::get('/signalements/creer/pompiers', [SignalementController::class, 'createPompiers'])->name('signalements.create.pompiers');
 
     // Reçus
     Route::get('/reçus/{reçu}/telecharger', [ReçuController::class, 'telecharger'])->name('reçus.telecharger');
