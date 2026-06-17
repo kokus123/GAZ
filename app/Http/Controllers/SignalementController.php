@@ -77,6 +77,17 @@ class SignalementController extends Controller
         return view('signalements.show', compact('signalement'));
     }
 
+
+
+        public function createPolice()
+    {
+        return view('signalements.create', ['typeService' => 'police']);
+    }
+
+    public function createPompiers()
+    {
+        return view('signalements.create', ['typeService' => 'pompiers']);
+    }
     /**
      * Signaler à la police
      */
