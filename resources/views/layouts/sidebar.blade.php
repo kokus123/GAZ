@@ -295,11 +295,11 @@
 
             <div class="sidebar-divider"></div>
 
-            <a href="{{ route('visite') }}" class="nav-item {{ request()->routeIs('visite') ? 'active' : '' }}">
+            <a href="{{ route('agent-ia') }}" class="nav-item {{ request()->routeIs('agent-ia') ? 'active' : '' }}">
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/>
                 </svg>
-                À propos
+                Agent IA
             </a>
 
         {{-- ── NAVIGATION VENDEUR ── --}}
@@ -355,11 +355,11 @@
 
             <div class="sidebar-divider"></div>
 
-            <a href="{{ route('visite') }}" class="nav-item {{ request()->routeIs('visite') ? 'active' : '' }}">
+            <a href="{{ route('agent-ia') }}" class="nav-item {{ request()->routeIs('agent-ia') ? 'active' : '' }}">
                 <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/>
                 </svg>
-                À propos
+                Agent IA
             </a>
 
         @endif
@@ -482,77 +482,7 @@
 
 </div>
 
-{{-- ══════════════════════════════════════════════════════════
-     CHATBOT IA (clients uniquement)
-     ══════════════════════════════════════════════════════════ --}}
-@auth
-@if(!Auth::user()->isAdmin() && !Auth::user()->isVendeur())
-<style>
-    #chatbot-btn { transition: transform .2s ease, box-shadow .2s ease; }
-    #chatbot-btn:hover { transform: scale(1.08); box-shadow: 0 8px 28px rgba(26,122,74,.5) !important; }
-    #chat-window { transition: opacity .25s ease, transform .25s ease; transform-origin: bottom right; }
-    #chat-window.chat-hidden  { opacity: 0; transform: scale(.92) translateY(10px); pointer-events: none; }
-    #chat-window.chat-visible { opacity: 1; transform: scale(1) translateY(0); pointer-events: all; }
-    .dot-typing { width:7px;height:7px;background:#9ca3af;border-radius:50%;display:inline-block;animation:dotBounce 1.3s infinite ease-in-out; }
-    .dot-typing:nth-child(2){animation-delay:.2s}.dot-typing:nth-child(3){animation-delay:.4s}
-    @keyframes dotBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
-</style>
-<div id="chatbot-container" style="position:fixed;bottom:24px;right:24px;z-index:9999;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-    <button onclick="toggleChat()" id="chatbot-btn" aria-label="Ouvrir l'assistant GazApp"
-        style="width:56px;height:56px;background:#16A34A;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(22,163,74,.45);">
-        <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
-            <rect x="5" y="7" width="26" height="16" rx="5" fill="white"/>
-            <rect x="8.5" y="11.5" width="7" height="5.5" rx="2" fill="#16A34A"/>
-            <circle cx="12" cy="14.2" r="1.8" fill="white"/>
-            <rect x="20.5" y="11.5" width="7" height="5.5" rx="2" fill="#16A34A"/>
-            <circle cx="24" cy="14.2" r="1.8" fill="white"/>
-            <rect x="11" y="19.5" width="14" height="2.2" rx="1.1" fill="#d1fae5"/>
-        </svg>
-    </button>
-    <div id="chat-window" class="chat-hidden"
-         style="position:absolute;bottom:68px;right:0;width:320px;background:white;border-radius:20px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.2);border:1px solid #e5e7eb;display:flex;flex-direction:column;height:440px;">
-        <div style="background:#16A34A;padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;">
-            <div style="width:38px;height:38px;background:rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                <svg width="22" height="22" viewBox="0 0 36 36" fill="none"><rect x="5" y="7" width="26" height="16" rx="5" fill="white"/><rect x="8.5" y="11.5" width="7" height="5.5" rx="2" fill="#16A34A"/><circle cx="12" cy="14.2" r="1.8" fill="white"/><rect x="20.5" y="11.5" width="7" height="5.5" rx="2" fill="#16A34A"/><circle cx="24" cy="14.2" r="1.8" fill="white"/></svg>
-            </div>
-            <div style="flex:1;">
-                <p style="color:white;font-weight:600;font-size:13px;margin:0;">Assistant GazApp</p>
-                <p style="color:rgba(255,255,255,.75);font-size:11px;margin:0;"><span style="display:inline-block;width:6px;height:6px;background:#86efac;border-radius:50%;margin-right:4px;vertical-align:middle;"></span>En ligne</p>
-            </div>
-            <button onclick="toggleChat()" style="background:rgba(255,255,255,.15);border:none;color:white;cursor:pointer;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;">✕</button>
-        </div>
-        <div id="chat-messages" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;background:#f9fafb;">
-            <div style="display:flex;gap:8px;align-items:flex-start;">
-                <div style="width:28px;height:28px;background:#16A34A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="15" height="15" viewBox="0 0 36 36" fill="none"><rect x="5" y="7" width="26" height="16" rx="5" fill="white"/><rect x="8.5" y="11.5" width="7" height="5.5" rx="2" fill="#16A34A"/><circle cx="12" cy="14.2" r="1.8" fill="white"/><rect x="20.5" y="11.5" width="7" height="5.5" rx="2" fill="#16A34A"/><circle cx="24" cy="14.2" r="1.8" fill="white"/></svg></div>
-                <div style="background:white;border-radius:14px;border-top-left-radius:4px;padding:9px 12px;font-size:12.5px;color:#374151;max-width:220px;box-shadow:0 1px 4px rgba(0,0,0,.07);line-height:1.5;">
-                    Bonjour <strong>{{ Auth::user()->name }}</strong> ! 👋 Je suis votre assistant GazApp.
-                </div>
-            </div>
-        </div>
-        <div id="suggestions" style="padding:8px 10px;display:flex;gap:5px;flex-wrap:wrap;background:white;border-top:1px solid #f3f4f6;flex-shrink:0;">
-            <button onclick="envoyerSuggestion('Comment passer une commande ?')" style="font-size:11px;background:#f0fdf4;color:#16A34A;border:1px solid #bbf7d0;padding:4px 10px;border-radius:20px;cursor:pointer;font-weight:500;">🛒 Commander</button>
-            <button onclick="envoyerSuggestion('Où en est ma livraison ?')" style="font-size:11px;background:#f0fdf4;color:#16A34A;border:1px solid #bbf7d0;padding:4px 10px;border-radius:20px;cursor:pointer;font-weight:500;">📦 Suivi</button>
-            <button onclick="envoyerSuggestion('Urgence fuite de gaz !')" style="font-size:11px;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;padding:4px 10px;border-radius:20px;cursor:pointer;font-weight:500;">🚨 Urgence</button>
-        </div>
-        <div style="padding:10px;background:white;border-top:1px solid #f3f4f6;display:flex;gap:7px;align-items:center;flex-shrink:0;">
-            <input id="chat-input" type="text" placeholder="Votre message..." onkeydown="if(event.key==='Enter')envoyerMessage()"
-                style="flex:1;border:1.5px solid #e5e7eb;border-radius:10px;padding:7px 11px;font-size:12.5px;outline:none;color:#111827;background:#fafafa;"
-                onfocus="this.style.borderColor='#16A34A'" onblur="this.style.borderColor='#e5e7eb'">
-            <button onclick="envoyerMessage()" id="send-btn" style="background:#16A34A;border:none;border-radius:10px;width:36px;height:36px;cursor:pointer;color:white;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">➤</button>
-        </div>
-    </div>
-</div>
-<script>
-let historiqueChat=[];let chatVisible=false;
-function toggleChat(){const w=document.getElementById('chat-window');chatVisible=!chatVisible;if(chatVisible){w.classList.remove('chat-hidden');w.classList.add('chat-visible');setTimeout(()=>document.getElementById('chat-input').focus(),100);}else{w.classList.remove('chat-visible');w.classList.add('chat-hidden');}}
-function envoyerSuggestion(t){document.getElementById('suggestions').style.display='none';document.getElementById('chat-input').value=t;envoyerMessage();}
-async function envoyerMessage(){const input=document.getElementById('chat-input');const btn=document.getElementById('send-btn');const msg=input.value.trim();if(!msg)return;ajouterMessage(msg,'user');input.value='';btn.disabled=true;btn.style.opacity='.5';const typingId=afficherTyping();historiqueChat.push({role:'user',content:msg});try{const res=await fetch('/chatbot',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').content},body:JSON.stringify({message:msg,historique:historiqueChat.slice(-6)})});const data=await res.json();supprimerTyping(typingId);const reponse=data.reponse??"Désolé, une erreur est survenue.";ajouterMessage(reponse,'bot');historiqueChat.push({role:'assistant',content:reponse});}catch(e){supprimerTyping(typingId);ajouterMessage("Erreur de connexion.","bot");}btn.disabled=false;btn.style.opacity='1';input.focus();}
-function ajouterMessage(texte,role){const zone=document.getElementById('chat-messages');const div=document.createElement('div');if(role==='user'){div.style.cssText='display:flex;justify-content:flex-end;';div.innerHTML=`<div style="background:#16A34A;color:white;border-radius:14px;border-top-right-radius:4px;padding:9px 12px;font-size:12.5px;max-width:210px;line-height:1.5;">${texte}</div>`;}else{div.style.cssText='display:flex;gap:7px;align-items:flex-start;';div.innerHTML=`<div style="width:28px;height:28px;background:#16A34A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="15" height="15" viewBox="0 0 36 36" fill="none"><rect x="5" y="7" width="26" height="16" rx="5" fill="white"/><rect x="8.5" y="11.5" width="7" height="5.5" rx="2" fill="#16A34A"/><circle cx="12" cy="14.2" r="1.8" fill="white"/><rect x="20.5" y="11.5" width="7" height="5.5" rx="2" fill="#16A34A"/><circle cx="24" cy="14.2" r="1.8" fill="white"/></svg></div><div style="background:white;border-radius:14px;border-top-left-radius:4px;padding:9px 12px;font-size:12.5px;color:#374151;max-width:210px;line-height:1.5;box-shadow:0 1px 4px rgba(0,0,0,.07);">${texte}</div>`;}zone.appendChild(div);zone.scrollTop=zone.scrollHeight;}
-function afficherTyping(){const zone=document.getElementById('chat-messages');const id='typing-'+Date.now();const div=document.createElement('div');div.id=id;div.style.cssText='display:flex;gap:7px;align-items:flex-start;';div.innerHTML=`<div style="width:28px;height:28px;background:#16A34A;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="15" height="15" viewBox="0 0 36 36" fill="none"><rect x="5" y="7" width="26" height="16" rx="5" fill="white"/></svg></div><div style="background:white;border-radius:14px;border-top-left-radius:4px;padding:10px 14px;box-shadow:0 1px 4px rgba(0,0,0,.07);display:flex;gap:4px;align-items:center;"><span class="dot-typing"></span><span class="dot-typing"></span><span class="dot-typing"></span></div>`;zone.appendChild(div);zone.scrollTop=zone.scrollHeight;return id;}
-function supprimerTyping(id){const el=document.getElementById(id);if(el)el.remove();}
-</script>
-@endif
-@endauth
+
 
 {{-- Sidebar JS --}}
 <script>
