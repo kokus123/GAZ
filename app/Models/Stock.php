@@ -17,6 +17,7 @@ class Stock extends Model
         'prix_unitaire',
         'unite',
         'description',
+        'photo',
         'disponible',
     ];
 
@@ -78,5 +79,18 @@ class Stock extends Model
     public function incrementerStock(int $quantite): void
     {
         $this->increment('quantite_disponible', $quantite);
+    }
+
+    /**
+     * URL publique de la photo, ou une image par défaut si le vendeur
+     * n'a pas encore ajouté de photo pour ce produit.
+     */
+    public function getPhotoUrlAttribute(): string
+    {
+        if ($this->photo) {
+            return asset('storage/'.$this->photo);
+        }
+
+        return asset('images/bouteille-gaz-defaut.png');
     }
 }

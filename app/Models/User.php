@@ -24,7 +24,12 @@ class User extends Authenticatable
         'password',
         'role',
         'is_online',
-
+        'latitude',
+        'longitude',
+        'quartier',
+        'adresse_detaillee',
+        'telephone',
+        'localisation_completee_at',
     ];
 
     /**
@@ -47,6 +52,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
+            'localisation_completee_at' => 'datetime',
         ];
     }
 
@@ -109,6 +117,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Vendeurs ayant une localisation GPS valide et complète.
+     */
+    public function scopeAvecLocalisation($query)
+    {
+        return $query->where('role', 'vendeur')
+            ->whereNotNull('latitude')
+            ->whereNotNull('longitude');
+    }
+
+    /**
      * Helpers
      */
     public function isAdmin(): bool
@@ -124,5 +142,13 @@ class User extends Authenticatable
     public function isClient(): bool
     {
         return $this->role === 'client';
+    }
+
+    /**
+     * Le vendeur a-t-il déjà complété sa localisation (profil) ?
+     */
+    public function aLocalisationComplete(): bool
+    {
+        return ! empty($this->latitude) && ! empty($this->longitude) && ! empty($this->quartier);
     }
 }

@@ -38,7 +38,7 @@
     </div>
 
     {{-- Formulaire --}}
-    <form action="{{ route('commandes.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('commandes.store') }}" method="POST" class="space-y-6" id="commande-form">
         @csrf
 
         {{-- Section Client --}}
@@ -58,8 +58,7 @@
                            value="{{ old('nom_client') }}"
                            placeholder="Ex: Jean-Paul Mbarga"
                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all"
-                           style="focus:ring-color:#16A34A;"
-                           onfocus="this.style.ringColor='#16A34A'; this.style.borderColor='#16A34A';"
+                           onfocus="this.style.borderColor='#16A34A';"
                            onblur="this.style.borderColor='#e5e7eb';">
                 </div>
                 <div>
@@ -154,24 +153,53 @@
                               onfocus="this.style.borderColor='#16A34A'; this.style.boxShadow='0 0 0 3px rgba(22,163,74,.12)';"
                               onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">{{ old('adresse_livraison') }}</textarea>
                 </div>
+
+                {{-- Statuts géolocalisation --}}
+                <div id="geoloc-loading" class="flex items-center gap-3 px-4 py-3 rounded-xl" style="background:#f0fdf4;">
+                    <svg class="w-5 h-5 animate-spin" style="color:#16A34A;" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <p class="text-sm text-green-800">Détection de votre position pour trouver le vendeur le plus proche…</p>
+                </div>
+
+                <div id="geoloc-success" class="hidden flex items-center gap-3 px-4 py-3 rounded-xl"
+                     style="background:#f0fdf4; border:1.5px solid #bbf7d0;">
+                    <svg class="w-5 h-5 flex-shrink-0" style="color:#16A34A;" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+                    </svg>
+                    <p class="text-sm font-semibold text-green-800">Position détectée ! Nous trouverons le vendeur le plus proche de vous.</p>
+                </div>
+
+                <div id="geoloc-refus" class="hidden flex items-center gap-3 px-4 py-3 rounded-xl bg-amber-50 border border-amber-200">
+                    <svg class="w-5 h-5 flex-shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/>
+                    </svg>
+                    <p class="text-sm text-amber-800">
+                        Pas de souci ! Sans géolocalisation, nous utiliserons votre adresse de livraison
+                        pour vous proposer des vendeurs de votre quartier.
+                    </p>
+                </div>
+
                 <div class="grid grid-cols-2 gap-5">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Latitude <span class="text-gray-400 font-normal">(optionnel)</span></label>
-                        <input type="text" name="latitude" oninput="updateProgress()"
-                               value="{{ old('latitude') }}" placeholder="Ex: 4.0511"
-                               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none transition-all"
-                               onfocus="this.style.borderColor='#16A34A'; this.style.boxShadow='0 0 0 3px rgba(22,163,74,.12)';"
-                               onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            Latitude <span class="text-gray-400 font-normal">(détection automatique)</span>
+                        </label>
+                        <input type="text" id="latitude" name="latitude" readonly oninput="updateProgress()"
+                               value="{{ old('latitude') }}" placeholder="—"
+                               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 bg-gray-50 cursor-not-allowed">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Longitude <span class="text-gray-400 font-normal">(optionnel)</span></label>
-                        <input type="text" name="longitude" oninput="updateProgress()"
-                               value="{{ old('longitude') }}" placeholder="Ex: 9.7679"
-                               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none transition-all"
-                               onfocus="this.style.borderColor='#16A34A'; this.style.boxShadow='0 0 0 3px rgba(22,163,74,.12)';"
-                               onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                            Longitude <span class="text-gray-400 font-normal">(détection automatique)</span>
+                        </label>
+                        <input type="text" id="longitude" name="longitude" readonly oninput="updateProgress()"
+                               value="{{ old('longitude') }}" placeholder="—"
+                               class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-600 bg-gray-50 cursor-not-allowed">
                     </div>
                 </div>
+
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Notes <span class="text-gray-400 font-normal">(optionnel)</span></label>
                     <textarea name="notes" oninput="updateProgress()" rows="2"
@@ -198,7 +226,7 @@
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
                 </svg>
-                Valider la commande
+                Voir les vendeurs disponibles
             </button>
         </div>
     </form>
@@ -206,7 +234,7 @@
 
 <script>
 function updateProgress() {
-    const fields = document.querySelectorAll('input:not([type=submit]), select, textarea');
+    const fields = document.querySelectorAll('input:not([type=submit]):not([readonly]), select, textarea');
     let filled = 0, total = 0;
     fields.forEach(f => { total++; if (f.value.trim() !== '') filled++; });
     const pct = Math.round((filled / total) * 100);
@@ -226,5 +254,36 @@ function calculateTotal() {
         totalEl.style.display = 'none';
     }
 }
+
+// Géolocalisation automatique du CLIENT au chargement de la page.
+// En cas de refus, le formulaire reste pleinement utilisable (fallback quartier
+// géré côté serveur dans CommandeController::store()).
+function demarrerGeolocalisationClient() {
+    if (!navigator.geolocation) {
+        afficherRefusGeoloc();
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function (position) {
+            document.getElementById('latitude').value = position.coords.latitude;
+            document.getElementById('longitude').value = position.coords.longitude;
+            document.getElementById('geoloc-loading').classList.add('hidden');
+            document.getElementById('geoloc-success').classList.remove('hidden');
+            updateProgress();
+        },
+        function (error) {
+            afficherRefusGeoloc();
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+}
+
+function afficherRefusGeoloc() {
+    document.getElementById('geoloc-loading').classList.add('hidden');
+    document.getElementById('geoloc-refus').classList.remove('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', demarrerGeolocalisationClient);
 </script>
 @endsection

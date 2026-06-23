@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmailVerificationController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\PaymentServiceController;
 use App\Http\Controllers\ReçuController;
 use App\Http\Controllers\SignalementController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\VendeurProfilController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -112,13 +114,49 @@ Route::middleware(['auth'])->group(function () {
 
     // Dashboards
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboardv', [DashboardController::class, 'index'])->name('dashboardv');
+    Route::get('/dashboardv', [DashboardController::class, 'index'])
+    ->middleware('localisation.vendeur')
+    ->name('dashboardv');
     Route::get('/dashboardc', [DashboardController::class, 'index'])->name('dashboardc');
 
     // Commandes
     Route::resource('commandes', CommandeController::class);
     Route::post('/commandes/{commande}/confirmer', [CommandeController::class, 'confirmer'])->name('commandes.confirmer');
     Route::post('/commandes/{commande}/annuler', [CommandeController::class, 'annuler'])->name('commandes.annuler');
+
+    // Catalogue + panier (nouveau flux client : choisir vendeur -> catalogue -> panier)
+    Route::get('/commandes/vendeur/{vendeur}/catalogue', [CommandeController::class, 'catalogueVendeur'])
+        ->name('commandes.catalogue-vendeur');
+    Route::post('/commandes/panier/ajouter', [CommandeController::class, 'ajouterAuPanier'])
+        ->name('commandes.panier.ajouter');
+    Route::post('/commandes/panier/retirer', [CommandeController::class, 'retirerDuPanier'])
+        ->name('commandes.panier.retirer');
+    Route::get('/commandes/panier', [CommandeController::class, 'voirPanier'])
+        ->name('commandes.panier');
+    Route::post('/commandes/panier/valider', [CommandeController::class, 'validerPanier'])
+        ->name('commandes.panier.valider');
+
+    // Catalogue vendeur (le vendeur gère ses propres produits avec photos)
+    Route::get('/vendeur/catalogue', [CatalogueController::class, 'index'])
+        ->name('vendeur.catalogue.index');
+    Route::get('/vendeur/catalogue/creer', [CatalogueController::class, 'create'])
+        ->name('vendeur.catalogue.create');
+    Route::post('/vendeur/catalogue', [CatalogueController::class, 'store'])
+        ->name('vendeur.catalogue.store');
+    Route::get('/vendeur/catalogue/{stock}/editer', [CatalogueController::class, 'edit'])
+        ->name('vendeur.catalogue.edit');
+    Route::put('/vendeur/catalogue/{stock}', [CatalogueController::class, 'update'])
+        ->name('vendeur.catalogue.update');
+    Route::delete('/vendeur/catalogue/{stock}', [CatalogueController::class, 'destroy'])
+        ->name('vendeur.catalogue.destroy');
+
+    // Profil vendeur — localisation
+    Route::get('/vendeur/profil/completer', [VendeurProfilController::class, 'completer'])
+        ->name('vendeur.profil.completer');
+    Route::post('/vendeur/profil/enregistrer', [VendeurProfilController::class, 'enregistrer'])
+        ->name('vendeur.profil.enregistrer');
+    Route::get('/vendeur/profil/modifier', [VendeurProfilController::class, 'modifier'])
+        ->name('vendeur.profil.modifier');
 
     // Livraisons
     Route::resource('livraisons', LivraisonController::class);
