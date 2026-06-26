@@ -25,8 +25,8 @@
     <div class="bg-white rounded-2xl shadow-sm border border-green-50 p-5 mb-6">
         <div class="flex justify-between text-xs font-semibold text-gray-400 mb-3 uppercase tracking-wider">
             <span>Client</span>
-            <span>Gaz</span>
             <span>Livraison</span>
+            <span>Vendeur</span>
             <span>Finalisation</span>
         </div>
         <div class="w-full bg-gray-100 rounded-full h-2.5">
@@ -82,55 +82,15 @@
             </div>
         </div>
 
-        {{-- Section Gaz --}}
-        <div class="bg-white rounded-2xl shadow-sm border border-green-50 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-50" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);">
-                <div class="flex items-center gap-2">
-                    <svg class="w-4 h-4" style="color:#16A34A;" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 26C6 24 4 18 5.5 13.5"/>
-                    </svg>
-                    <h3 class="text-sm font-bold uppercase tracking-wider" style="color:#15803D;">Commande de gaz</h3>
-                </div>
-            </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Type de gaz <span class="text-red-500">*</span></label>
-                    <select name="type_gaz" required onchange="updateProgress()"
-                            class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none transition-all bg-white"
-                            onfocus="this.style.borderColor='#16A34A'; this.style.boxShadow='0 0 0 3px rgba(22,163,74,.12)';"
-                            onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
-                        <option value="">Choisir</option>
-                        <option value="propane" {{ old('type_gaz') == 'propane' ? 'selected' : '' }}>Bouteille de 6 kg</option>
-                        <option value="butane" {{ old('type_gaz') == 'butane' ? 'selected' : '' }}>Bouteille de 12,5 kg</option>
-                        <option value="butane" {{ old('type_gaz') == 'butane' ? 'selected' : '' }}>Bouteille de 35 kg</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Quantité <span class="text-red-500">*</span></label>
-                    <input type="number" name="quantite" min="1" required oninput="updateProgress(); calculateTotal();"
-                           value="{{ old('quantite') }}"
-                           placeholder="Nb. bouteilles"
-                           class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none transition-all"
-                           onfocus="this.style.borderColor='#16A34A'; this.style.boxShadow='0 0 0 3px rgba(22,163,74,.12)';"
-                           onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Prix unitaire (FCFA) <span class="text-red-500">*</span></label>
-                    <input type="number" name="prix_unitaire" required oninput="updateProgress(); calculateTotal();"
-                           value="{{ old('prix_unitaire', 15000) }}"
-                           class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none transition-all"
-                           onfocus="this.style.borderColor='#16A34A'; this.style.boxShadow='0 0 0 3px rgba(22,163,74,.12)';"
-                           onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none';">
-                </div>
-                {{-- Total dynamique --}}
-                <div class="md:col-span-3" id="total-display" style="display:none;">
-                    <div class="flex items-center justify-between px-5 py-3.5 rounded-xl"
-                         style="background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1.5px solid #bbf7d0;">
-                        <span class="text-sm font-semibold text-green-800">💰 Total estimé</span>
-                        <span id="total-amount" class="text-xl font-bold" style="color:#15803D;">— FCFA</span>
-                    </div>
-                </div>
-            </div>
+        {{-- Information : le choix du produit se fait à l'étape suivante --}}
+        <div class="rounded-2xl p-4 flex items-start gap-3" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1.5px solid #bbf7d0;">
+            <svg class="w-5 h-5 flex-shrink-0 mt-0.5" style="color:#16A34A;" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/>
+            </svg>
+            <p class="text-sm text-green-800">
+                Une fois votre adresse renseignée, vous choisirez votre vendeur puis vos bouteilles de gaz directement dans son catalogue (6 kg, 12,5 kg ou 35 kg).
+                Des frais de livraison de <strong>1 000 FCFA</strong> s'appliquent une seule fois par commande.
+            </p>
         </div>
 
         {{-- Section Livraison --}}
@@ -240,19 +200,6 @@ function updateProgress() {
     const pct = Math.round((filled / total) * 100);
     document.getElementById('progress-bar').style.width = pct + '%';
     document.getElementById('progress-text').textContent = pct + '% complété';
-}
-
-function calculateTotal() {
-    const qty = parseFloat(document.querySelector('[name=quantite]')?.value) || 0;
-    const prix = parseFloat(document.querySelector('[name=prix_unitaire]')?.value) || 0;
-    const totalEl = document.getElementById('total-display');
-    const amountEl = document.getElementById('total-amount');
-    if (qty > 0 && prix > 0) {
-        amountEl.textContent = (qty * prix).toLocaleString('fr-FR') + ' FCFA';
-        totalEl.style.display = 'block';
-    } else {
-        totalEl.style.display = 'none';
-    }
 }
 
 // Géolocalisation automatique du CLIENT au chargement de la page.

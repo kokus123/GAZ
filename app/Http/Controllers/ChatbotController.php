@@ -73,3 +73,4 @@ class ChatbotController extends Controller
         return $response->json('choices.0.message.content');
     }
 }
+        
