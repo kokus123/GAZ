@@ -15,6 +15,13 @@ use Illuminate\Support\Str;
 
 class CommandeController extends Controller
 {
+    /**
+     * Frais de livraison fixes de la plateforme, appliqués une seule fois
+     * par commande, peu importe le nombre de bouteilles ou de produits
+     * différents dans le panier.
+     */
+    const FRAIS_LIVRAISON = 1000;
+
     protected $geolocalisationService;
 
     protected $paymentService;
@@ -144,6 +151,8 @@ class CommandeController extends Controller
 
     /**
      * Ajouter un produit du catalogue au panier (session).
+     * Le prix utilisé est TOUJOURS celui défini par le vendeur sur son
+     * produit (Stock::prix_unitaire) — pas un prix fixe de plateforme.
      */
     public function ajouterAuPanier(Request $request)
     {
@@ -191,6 +200,7 @@ class CommandeController extends Controller
 
     /**
      * ÉTAPE 3 -> 4 : Afficher le récapitulatif du panier avant validation finale.
+     * Le total affiché inclut les frais de livraison fixes (une seule fois).
      */
     public function voirPanier()
     {
@@ -203,14 +213,21 @@ class CommandeController extends Controller
         }
 
         $vendeur = User::findOrFail($vendeurId);
-        $total = collect($panier)->sum(fn ($item) => $item['prix_unitaire'] * $item['quantite']);
 
-        return view('commandes.panier', compact('panier', 'vendeur', 'total'));
+        $sousTotal = collect($panier)->sum(fn ($item) => $item['prix_unitaire'] * $item['quantite']);
+        $fraisLivraison = self::FRAIS_LIVRAISON;
+        $total = $sousTotal + $fraisLivraison;
+
+        return view('commandes.panier', compact('panier', 'vendeur', 'sousTotal', 'fraisLivraison', 'total'));
     }
 
     /**
      * ÉTAPE 4 -> FIN : Validation finale -> création réelle de la/des commande(s)
      * et décrémentation du stock pour chaque produit du panier.
+     *
+     * Les frais de livraison (1000F) sont ajoutés une seule fois, sur la
+     * PREMIÈRE commande créée, pour ne pas les dupliquer si le panier
+     * contient plusieurs produits différents.
      */
     public function validerPanier()
     {
@@ -227,6 +244,7 @@ class CommandeController extends Controller
             DB::beginTransaction();
 
             $commandesCreees = [];
+            $premierProduit = true;
 
             foreach ($panier as $item) {
                 $stock = Stock::find($item['stock_id']);
@@ -234,6 +252,9 @@ class CommandeController extends Controller
                 if (! $stock || $stock->quantite_disponible < $item['quantite']) {
                     throw new \Exception("Stock insuffisant pour {$item['type_gaz']}.");
                 }
+
+                $fraisLivraison = $premierProduit ? self::FRAIS_LIVRAISON : 0;
+                $sousTotalLigne = $item['prix_unitaire'] * $item['quantite'];
 
                 $commande = Commande::create([
                     'client_id' => Auth::id(),
@@ -244,7 +265,7 @@ class CommandeController extends Controller
                     'email' => $infosClient['email'] ?? null,
                     'quantite' => $item['quantite'],
                     'prix_unitaire' => $item['prix_unitaire'],
-                    'prix_total' => $item['prix_unitaire'] * $item['quantite'],
+                    'prix_total' => $sousTotalLigne + $fraisLivraison,
                     'adresse_livraison' => $infosClient['adresse_livraison'],
                     'latitude' => $infosClient['latitude'] ?? null,
                     'longitude' => $infosClient['longitude'] ?? null,
@@ -256,6 +277,7 @@ class CommandeController extends Controller
                 $stock->decrementerStock($item['quantite']);
 
                 $commandesCreees[] = $commande;
+                $premierProduit = false;
             }
 
             DB::commit();
