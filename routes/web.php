@@ -41,7 +41,6 @@ Route::get('/visite', function () {
 |--------------------------------------------------------------------------
 */
 
-// Connexion
 Route::get('/connexion', function () {
     return view('connexion');
 })->name('connexion');
@@ -53,14 +52,12 @@ Route::get('/login', function () {
 Route::post('/connexion', [AuthController::class, 'login'])->name('connexion.login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
-// Inscription
 Route::get('/inscription', [AuthController::class, 'showInscriptionForm'])->name('inscription.form');
 Route::get('/register', [AuthController::class, 'showInscriptionForm'])->name('register');
 
 Route::post('/inscription', [AuthController::class, 'store'])->name('inscription.store');
 Route::post('/register', [AuthController::class, 'store'])->name('register.submit');
 
-// Mot de passe oublié
 Route::get('/Mot-de-passe', function () {
     return view('Mot-de-passe');
 })->name('forgot');
@@ -72,21 +69,18 @@ Route::get('/forgot-password', function () {
 Route::post('/Mot-de-passe', [AuthController::class, 'mdpOublier'])->name('mdpOublier');
 Route::post('/forgot-password', [AuthController::class, 'mdpOublier'])->name('password.email');
 
-// Réinitialisation de mot de passe
 Route::get('/reset-password/{token}', function () {
     return view('Mot-de-passe');
 })->name('password.reset');
 
 Route::post('/reset-password', [AuthController::class, 'mdpOublier'])->name('password.update');
 
-// Confirmation de mot de passe
 Route::get('/confirm-password', function () {
     return view('connexion');
 })->name('password.confirm');
 
 Route::post('/confirm-password', [AuthController::class, 'login'])->name('password.confirm.submit');
 
-// Vérification d'email
 Route::get('/verify-email', function () {
     return view('connexion');
 })->name('verification.notice');
@@ -94,7 +88,6 @@ Route::get('/verify-email', function () {
 Route::get('/verify-email/{id}/{hash}', [EmailVerificationController::class, 'verify'])
     ->name('verification.verify');
 
-// Déconnexion
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 /*
@@ -122,16 +115,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/dashboardc', [DashboardController::class, 'index'])->name('dashboardc');
 
-    // ── Commandes ───────────────────────────────────────────────────────
-    Route::resource('commandes', CommandeController::class);
-
-    Route::post('/commandes/{commande}/confirmer', [CommandeController::class, 'confirmer'])
-        ->name('commandes.confirmer');
-
-    Route::post('/commandes/{commande}/annuler', [CommandeController::class, 'annuler'])
-        ->name('commandes.annuler');
-
+    // ===========================================================
     // Catalogue + panier (flux client : choisir vendeur → catalogue → panier)
+    // Déclarées AVANT le Route::resource('commandes', ...) pour empêcher
+    // que le segment {commande} du resource ne capture "panier" ou
+    // "vendeur" et ne déclenche un faux 404 (ModelNotFound silencieux).
+    // ===========================================================
     Route::get('/commandes/vendeur/{vendeur}/catalogue', [CommandeController::class, 'catalogueVendeur'])
         ->name('commandes.catalogue-vendeur');
 
@@ -147,7 +136,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/commandes/panier/valider', [CommandeController::class, 'validerPanier'])
         ->name('commandes.panier.valider');
 
-    // ── Catalogue vendeur ───────────────────────────────────────────────
+    // ── Commandes ───────────────────────────────────────────────────────
+    Route::resource('commandes', CommandeController::class);
+
+    Route::post('/commandes/{commande}/confirmer', [CommandeController::class, 'confirmer'])
+        ->name('commandes.confirmer');
+
+    Route::post('/commandes/{commande}/annuler', [CommandeController::class, 'annuler'])
+        ->name('commandes.annuler');
+
+    // ── Catalogue vendeur (le vendeur gère ses propres produits avec photos) ──
     Route::get('/vendeur/catalogue', [CatalogueController::class, 'index'])
         ->name('vendeur.catalogue.index');
 
